@@ -1,16 +1,24 @@
 package elections.models;
 
-public class Partylist {
+public class Party {
     private int id;
+    private int customOrder;
     private String name;
-    private String type;
     private String alias;
+    private boolean isPartylist;
 
     public int getId() {
         return id;
     }
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCustomOrder() {
+        return customOrder;
+    }
+    public void setCustomOrder(int customOrder) {
+        this.customOrder = customOrder;
     }
 
     public String getName() {
@@ -20,17 +28,17 @@ public class Partylist {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getAlias() {
         return alias;
     }
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public boolean isPartylist() {
+        return isPartylist;
+    }
+    public void setPartylist(boolean isPartylist) {
+        this.isPartylist = isPartylist;
     }
 }

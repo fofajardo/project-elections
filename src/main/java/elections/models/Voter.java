@@ -1,6 +1,6 @@
 package elections.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Voter {
     private int id;
@@ -13,8 +13,8 @@ public class Voter {
     private String voterUuid;
     private String voterHash;
     
-    private LocalDateTime lastSignIn;
-    private LocalDateTime voteRecorded; 
+    private Date lastSignIn;
+    private Date voteRecorded; 
 
     public int getId() {
         return id;
@@ -65,17 +65,17 @@ public class Voter {
         this.voterHash = voterHash;
     }
 
-    public LocalDateTime getLastSignIn() {
+    public Date getLastSignIn() {
         return lastSignIn;
     }
-    public void setLastSignIn(LocalDateTime lastSignIn) {
+    public void setLastSignIn(Date lastSignIn) {
         this.lastSignIn = lastSignIn;
     }
 
-    public LocalDateTime getVoteRecorded() {
+    public Date getVoteRecorded() {
         return voteRecorded;
     }
-    public void setVoteRecorded(LocalDateTime voteRecorded) {
+    public void setVoteRecorded(Date voteRecorded) {
         this.voteRecorded = voteRecorded;
     }
 }

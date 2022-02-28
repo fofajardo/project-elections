@@ -1,8 +1,9 @@
 package elections.models;
 
-public class VoteEntry {
+public class Response {
     private int voterId;
     private int candidateId;
+    private int partylistId;
 
     public int getVoterId() {
         return voterId;
@@ -16,5 +17,12 @@ public class VoteEntry {
     }
     public void setCandidateId(int candidateId) {
         this.candidateId = candidateId;
+    }
+
+    public int getPartylistId() {
+        return partylistId;
+    }
+    public void setPartylistId(int partylistId) {
+        this.partylistId = partylistId;
     }
 }

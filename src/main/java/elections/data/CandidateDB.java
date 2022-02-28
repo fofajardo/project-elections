@@ -10,9 +10,10 @@ public class CandidateDB {
         try {
             Connection connection = ConnectionUtil.getConnection();
     
-            String query = "INSERT INTO `candidates` "
-                         + "(`position_id`, `partylist_id`, `location_id`, `first_name`, `middle_name`, `last_name`)"
-                         + "VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO `candidates` ("
+                         + "`position_id`, `partylist_id`, `location_id`, "
+                         + "`first_name`, `middle_name`, `last_name`"
+                         + ") VALUES (?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
     
             statement.setInt(1, candidate.getPositionId());
@@ -65,7 +66,7 @@ public class CandidateDB {
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT * FROM `candidates` WHERE `position_id` = ?";
+            String query = "SELECT * FROM `candidates` WHERE `position_id`=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, positionId);
             ResultSet results = statement.executeQuery();
@@ -125,7 +126,7 @@ public class CandidateDB {
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "DELETE FROM `candidates` WHERE `id` = ?";
+            String query = "DELETE FROM `candidates` WHERE `id`=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             statement.executeUpdate(query);

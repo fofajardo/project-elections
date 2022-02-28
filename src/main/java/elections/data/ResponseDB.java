@@ -4,20 +4,29 @@ import java.sql.*;
 import java.util.*;
 import elections.models.*;
 
-public class VoteEntryDB {
-    public static void create(VoteEntry voteEntry) throws SQLException {
+public class ResponseDB {
+    public static void create(Response voteEntry) throws SQLException {
         PreparedStatement statement = null;
         try {
             Connection connection = ConnectionUtil.getConnection();
     
-            String query = "INSERT INTO `vote_entries` "
-                         + "(`voter_id`, `candidate_id`)"
+            String query = "INSERT INTO `responses` "
+                         + "(`voter_id`, `candidate_id`, `partylist_id`)"
                          + "VALUES (?, ?, ?)";
             statement = connection.prepareStatement(query);
-    
             statement.setInt(1, voteEntry.getVoterId());
-            statement.setInt(2, voteEntry.getCandidateId());
-
+            int candidateId = voteEntry.getCandidateId();
+            if (candidateId == 0) {
+                statement.setNull(2, Types.INTEGER);
+            } else {
+                statement.setInt(2, candidateId);
+            }
+            int partylistId = voteEntry.getPartylistId();
+            if (partylistId == 0) {
+                statement.setNull(3, Types.INTEGER);
+            } else {
+                statement.setInt(3, partylistId);
+            }
             statement.executeUpdate();
         } finally {
             if (statement != null) {
@@ -26,20 +35,21 @@ public class VoteEntryDB {
         }
     }
 
-    public static ArrayList<VoteEntry> read() throws SQLException {
-        ArrayList<VoteEntry> itemList = new ArrayList<VoteEntry>();
+    public static ArrayList<Response> read() throws SQLException {
+        ArrayList<Response> itemList = new ArrayList<Response>();
         Statement statement = null;
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT * FROM `vote_entries`";
+            String query = "SELECT * FROM `responses`";
             statement = connection.createStatement();
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                VoteEntry item = new VoteEntry();
+                Response item = new Response();
                 item.setVoterId(results.getInt(1));
                 item.setCandidateId(results.getInt(2));
+                item.setPartylistId(results.getInt(3));
                 itemList.add(item);
             }
         } finally {
@@ -50,21 +60,22 @@ public class VoteEntryDB {
         return itemList;
     }
 
-    public static ArrayList<VoteEntry> readFromVoter(int voterId) throws SQLException {
-        ArrayList<VoteEntry> itemList = new ArrayList<VoteEntry>();
+    public static ArrayList<Response> readFromVoter(int voterId) throws SQLException {
+        ArrayList<Response> itemList = new ArrayList<Response>();
         PreparedStatement statement = null;
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT * FROM `vote_entries` WHERE `voter_id` = ?";
+            String query = "SELECT * FROM `responses` WHERE `voter_id`=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, voterId);
             ResultSet results = statement.executeQuery();
 
             while (results.next()) {
-                VoteEntry item = new VoteEntry();
+                Response item = new Response();
                 item.setVoterId(results.getInt(1));
                 item.setCandidateId(results.getInt(2));
+                item.setPartylistId(results.getInt(3));
                 itemList.add(item);
             }
         } finally {
@@ -81,7 +92,7 @@ public class VoteEntryDB {
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT COUNT(*) AS rowCount FROM `vote_entries` WHERE `candidate_id` = ?";
+            String query = "SELECT COUNT(*) AS rowCount FROM `responses` WHERE `candidate_id` = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, candidateId);
             ResultSet results = statement.executeQuery();
@@ -95,8 +106,28 @@ public class VoteEntryDB {
         return voteCount;
     }
 
-    public static void update(VoteEntry voteEntry) throws SQLException {
-        // Vote entries cannot be updated
+    public static int getPartylistVoteCount(int partylistId) throws SQLException {
+        PreparedStatement statement = null;
+        int voteCount = -1;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT COUNT(*) AS rowCount FROM `responses` WHERE `partylist_id` = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, partylistId);
+            ResultSet results = statement.executeQuery();
+
+            voteCount = results.getInt(1);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return voteCount;
+    }
+
+    public static void update(Response voteEntry) throws SQLException {
+        // Vote entries cannot be modified or updated
         return;
     }
 
@@ -105,7 +136,7 @@ public class VoteEntryDB {
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "DELETE FROM `vote_entries` WHERE `voter_id` = ?";
+            String query = "DELETE FROM `responses` WHERE `voter_id` = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, voterId);
             statement.executeUpdate(query);
@@ -116,7 +147,7 @@ public class VoteEntryDB {
         }
     }
 
-    public static void delete(VoteEntry entry) throws SQLException {
+    public static void delete(Response entry) throws SQLException {
         delete(entry.getVoterId());
     }
 }

@@ -55,6 +55,60 @@ public class PartyDB {
         return itemList;
     }
 
+    public static Party readId(int partyId) throws SQLException {
+        Party item = null;
+        PreparedStatement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT * FROM `parties` WHERE `id`=?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, partyId);
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+                item = new Party();
+                item.setId(results.getInt(1));
+                item.setCustomOrder(results.getInt(2));
+                item.setName(results.getString(3));
+                item.setAlias(results.getString(4));
+                item.setPartylist(results.getBoolean(5));
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return item;
+    }
+
+    public static ArrayList<Party> readPartylist() throws SQLException {
+        ArrayList<Party> itemList = new ArrayList<Party>();
+        Statement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT * FROM `parties` WHERE `is_partylist`=1 ORDER BY `custom_order`";
+            statement = connection.createStatement();
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                Party item = new Party();
+                item.setId(results.getInt(1));
+                item.setCustomOrder(results.getInt(2));
+                item.setName(results.getString(3));
+                item.setAlias(results.getString(4));
+                item.setPartylist(results.getBoolean(5));
+                itemList.add(item);
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return itemList;
+    }
+
     public static void update(Party party) throws SQLException {
         PreparedStatement statement = null;
         try {

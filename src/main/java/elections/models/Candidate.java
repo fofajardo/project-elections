@@ -4,11 +4,13 @@ public class Candidate {
     private int id;
     private int positionId;
     private int locationId;
-    private int partylistId;
+    private int partyId;
     private String firstName;
     private String middleName;
     private String lastName;
 
+    private Party attachedParty;
+    
     public int getId() {
         return id;
     }
@@ -30,11 +32,11 @@ public class Candidate {
         this.locationId = locationId;
     }
 
-    public int getPartylistId() {
-        return partylistId;
+    public int getPartyId() {
+        return partyId;
     }
-    public void setPartylistId(int partylistId) {
-        this.partylistId = partylistId;
+    public void setPartyId(int partyId) {
+        this.partyId = partyId;
     }
 
     public String getFirstName() {
@@ -56,5 +58,12 @@ public class Candidate {
     }
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Party getAttachedParty() {
+        return attachedParty;
+    }
+    public void setAttachedParty(Party attachedParty) {
+        this.attachedParty = attachedParty;
     }
 }

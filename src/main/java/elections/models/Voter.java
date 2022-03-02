@@ -1,6 +1,7 @@
 package elections.models;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Voter {
     private int id;
@@ -14,7 +15,7 @@ public class Voter {
     private String voterHash;
     
     private Date lastSignIn;
-    private Date voteRecorded; 
+    private Date voteRecorded;
 
     public int getId() {
         return id;
@@ -58,6 +59,10 @@ public class Voter {
         this.voterUuid = voterUuid;
     }
 
+    public void randomizeVoterUuid() {
+        this.voterUuid = UUID.randomUUID().toString();
+    }
+    
     public String getVoterHash() {
         return voterHash;
     }

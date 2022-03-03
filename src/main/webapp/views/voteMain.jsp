@@ -83,7 +83,7 @@
     <div id="ballot-title" class="mt-3 mb-3">
         <span class="h3">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</span>
         <br/>
-        <span class="h5">${currentLocation.getName()}</span>
+        <span class="h6">${currentLocation.getName()}</span>
     </div>
     <form id="ballot-form"
           action="<c:url value='/vote/submit'/>"

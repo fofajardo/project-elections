@@ -3,17 +3,19 @@ package elections.models;
 import java.util.Date;
 import java.util.UUID;
 
-public class Voter {
+public class Account {
     private int id;
     private int locationId;
+    private String uuid;
     
     private String firstName;
     private String middleName;
     private String lastName;
-    
-    private String voterUuid;
-    private String voterHash;
-    
+
+    private String username;
+    private String email;
+    private String password;
+
     private Date lastSignIn;
     private Date voteRecorded;
 
@@ -52,22 +54,35 @@ public class Voter {
         this.lastName = lastName;
     }
 
-    public String getVoterUuid() {
-        return voterUuid;
+    public String getUsername() {
+        return username;
     }
-    public void setVoterUuid(String voterUuid) {
-        this.voterUuid = voterUuid;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void randomizeVoterUuid() {
-        this.voterUuid = UUID.randomUUID().toString();
+    public String getEmail() {
+        return email;
     }
-    
-    public String getVoterHash() {
-        return voterHash;
+    public void setEmail(String email) {
+        this.email = email;
     }
-    public void setVoterHash(String voterHash) {
-        this.voterHash = voterHash;
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+    public void randomizeUuid() {
+        this.uuid = UUID.randomUUID().toString();
     }
 
     public Date getLastSignIn() {

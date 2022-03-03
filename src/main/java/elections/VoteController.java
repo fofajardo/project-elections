@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.*;
 
 import elections.data.*;
@@ -15,6 +16,10 @@ public class VoteController extends HttpServlet {
     private static final long serialVersionUID = 1;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    if (AuthManager.redirectGuest(request, response)) {
+	        return;
+	    }
+
 	    String requestURI = request.getRequestURI();
 	    String url = "";
 
@@ -28,7 +33,11 @@ public class VoteController extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    String requestURI = request.getRequestURI();
+        if (AuthManager.redirectGuest(request, response)) {
+            return;
+        }
+
+        String requestURI = request.getRequestURI();
 	    String url = "";
 
 	    if (requestURI.endsWith("/submit")) {
@@ -40,10 +49,14 @@ public class VoteController extends HttpServlet {
             .forward(request, response);
 	}
 
-	private String goAnswer(HttpServletRequest request, HttpServletResponse response) {
-        request.setAttribute("pageTitle", "Voting Page");
+	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("pageSubtitle", "Answer Ballot");
 
         try {
+            Account account = AuthManager.getCurrentAccount(request, response);
+            Location currentLocation = LocationDB.readId(account.getLocationId());
+            request.setAttribute("currentLocation", currentLocation);
+
             ArrayList<Position> positions = PositionDB.read();
             request.setAttribute("positions",  positions);
 
@@ -71,13 +84,15 @@ public class VoteController extends HttpServlet {
 
 	private static final String parameterPrefix = "vote-position-";
 	
-	private String goSubmit(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private String goSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ArrayList<Position> positions = null;
         try {
             positions = PositionDB.read();
         } catch (SQLException e) {
             positions = new ArrayList<Position>();
         }
+
+        Account account = AuthManager.getCurrentAccount(request, response);
 
         Map<String, String[]> parameters = request.getParameterMap();
 	    Iterator<String> iterator = parameters.keySet().iterator();
@@ -121,7 +136,7 @@ public class VoteController extends HttpServlet {
     	            int targetId = 0;
     	                targetId = Integer.parseInt(values[i]);                
     	            
-    	            vote.setVoterId(1); // FIXME: THIS SHOULD NOT BE CONSTANT
+    	            vote.setVoterId(account.getId());
     	            if (isPartylist) {
     	                vote.setPartylistId(targetId);
     	            } else {
@@ -139,6 +154,13 @@ public class VoteController extends HttpServlet {
 	        return goAnswer(request, response);
 	    }
 
+	    account.setVoteRecorded(Date.from(Instant.now()));
+	    try {
+            AccountDB.update(account);
+        } catch (SQLException e) {
+            // Ignore exception from failed account update
+        }
+	    
 	    return "/views/voteSubmit.jsp";
 	}
 }

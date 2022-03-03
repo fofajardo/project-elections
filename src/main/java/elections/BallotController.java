@@ -183,18 +183,19 @@ public class BallotController extends HttpServlet {
 	
     private String goStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (AuthManager.isBallotSubmitted(request, response)) {
-            return "/views/ballotStatus.jsp";
+            request.setAttribute("ballotSubmitted", true);
+        } else {
+            Account account = AuthManager.getCurrentAccount(request, response);
+            String locationName = "";
+            try {
+                Location location = LocationDB.readId(account.getLocationId());
+                locationName = location.getName();
+            } catch (SQLException e) {
+                locationName = "Invalid location";
+            }
+            request.setAttribute("locationName", locationName);
+            request.setAttribute("voter", AuthManager.getCurrentAccount(request, response));
         }
-        Account account = AuthManager.getCurrentAccount(request, response);
-        String locationName = "";
-        try {
-            Location location = LocationDB.readId(account.getLocationId());
-            locationName = location.getName();
-        } catch (SQLException e) {
-            locationName = "Invalid location";
-        }
-        request.setAttribute("locationName", locationName);
-        request.setAttribute("voter", AuthManager.getCurrentAccount(request, response));
-        return "/views/ballotEntry.jsp";
+        return "/views/ballotStatus.jsp";
     }
 }

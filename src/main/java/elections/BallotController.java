@@ -185,7 +185,16 @@ public class BallotController extends HttpServlet {
         if (AuthManager.isBallotSubmitted(request, response)) {
             return "/views/ballotStatus.jsp";
         }
-        response.sendRedirect(request.getContextPath());
-        return "";
+        Account account = AuthManager.getCurrentAccount(request, response);
+        String locationName = "";
+        try {
+            Location location = LocationDB.readId(account.getLocationId());
+            locationName = location.getName();
+        } catch (SQLException e) {
+            locationName = "Invalid location";
+        }
+        request.setAttribute("locationName", locationName);
+        request.setAttribute("voter", AuthManager.getCurrentAccount(request, response));
+        return "/views/ballotEntry.jsp";
     }
 }

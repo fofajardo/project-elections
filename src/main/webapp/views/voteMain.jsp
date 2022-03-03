@@ -122,7 +122,7 @@
                     <c:set var="candidatePlural" value="s"/>
                 </c:if>
                 <div id="alert-${position.getId()}" class="alert alert-danger alert-validation invisible" role="alert">
-                    You must vote for ${position.getVoteLimit()} candidate<c:out value="${candidatePlural}"/> in this position.
+                    You must vote for <span class="fw-bold">only ${position.getVoteLimit()} candidate<c:out value="${candidatePlural}"/></span> in this position.
                 </div>
                 <div class="row">
                 <c:forEach items="${candidates.get(positionStatus.index)}" var="candidate" varStatus="candidateStatus">
@@ -187,7 +187,7 @@
                  aria-labelledby="heading-partylist">
                 <div class="accordion-body">
                 <div id="alert-partylist" class="alert alert-danger alert-validation invisible" role="alert">
-                    You must vote for only 1 party list.
+                    You must vote for <span class="fw-bold">only 1 party list</span>.
                 </div>
                 <div class="row">
                 <c:forEach items="${partylists}" var="partylist" varStatus="partylistStatus">

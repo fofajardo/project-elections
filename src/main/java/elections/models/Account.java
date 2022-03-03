@@ -11,6 +11,7 @@ public class Account {
     private String firstName;
     private String middleName;
     private String lastName;
+    private String suffix;
 
     private String username;
     private String email;
@@ -52,6 +53,13 @@ public class Account {
     }
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     public String getUsername() {

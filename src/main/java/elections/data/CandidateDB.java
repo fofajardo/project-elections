@@ -12,8 +12,9 @@ public class CandidateDB {
     
             String query = "INSERT INTO `candidates` ("
                          + "`position_id`, `partylist_id`, `location_id`, "
-                         + "`first_name`, `middle_name`, `last_name`"
-                         + ") VALUES (?, ?, ?, ?, ?, ?)";
+                         + "`first_name`, `middle_name`, "
+                         + "`last_name`, `suffix`"
+                         + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
     
             statement.setInt(1, candidate.getPositionId());
@@ -22,6 +23,7 @@ public class CandidateDB {
             statement.setString(4, candidate.getFirstName());
             statement.setString(5, candidate.getMiddleName());
             statement.setString(6, candidate.getLastName());
+            statement.setString(7, candidate.getSuffix());
 
             statement.executeUpdate();
         } finally {
@@ -50,6 +52,7 @@ public class CandidateDB {
                 item.setFirstName(results.getString(5));
                 item.setMiddleName(results.getString(6));
                 item.setLastName(results.getString(7));
+                item.setSuffix(results.getString(8));
                 itemList.add(item);
             }
         } finally {
@@ -85,15 +88,16 @@ public class CandidateDB {
                 item.setFirstName(results.getString(5));
                 item.setMiddleName(results.getString(6));
                 item.setLastName(results.getString(7));
+                item.setSuffix(results.getString(8));
                 if (attachParty) {
-                    int partyId = results.getInt(8);
+                    int partyId = results.getInt(9);
                     if (partyId > 0) {
                         Party attachedParty = new Party();
                         attachedParty.setId(partyId);
-                        attachedParty.setCustomOrder(results.getInt(9));
-                        attachedParty.setName(results.getString(10));
-                        attachedParty.setAlias(results.getString(11));
-                        attachedParty.setPartylist(results.getBoolean(12));
+                        attachedParty.setCustomOrder(results.getInt(10));
+                        attachedParty.setName(results.getString(11));
+                        attachedParty.setAlias(results.getString(12));
+                        attachedParty.setPartylist(results.getBoolean(13));
                         item.setAttachedParty(attachedParty);
                     }
                 }
@@ -118,7 +122,8 @@ public class CandidateDB {
                          + "    `location_id`=?,"
                          + "    `first_name`=?,"
                          + "    `middle_name`=?,"
-                         + "    `last_name`=?"
+                         + "    `last_name`=?,"
+                         + "    `suffix`=?"
                          + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);
     
@@ -128,7 +133,8 @@ public class CandidateDB {
             statement.setString(4, candidate.getFirstName());
             statement.setString(5, candidate.getMiddleName());
             statement.setString(6, candidate.getLastName());
-            statement.setInt(7, candidate.getId());
+            statement.setString(7, candidate.getSuffix());
+            statement.setInt(8, candidate.getId());
 
             statement.executeUpdate();
         } finally {

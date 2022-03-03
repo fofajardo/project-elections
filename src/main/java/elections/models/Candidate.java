@@ -8,6 +8,7 @@ public class Candidate {
     private String firstName;
     private String middleName;
     private String lastName;
+    private String suffix;
 
     private Party attachedParty;
     
@@ -58,6 +59,13 @@ public class Candidate {
     }
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     public Party getAttachedParty() {

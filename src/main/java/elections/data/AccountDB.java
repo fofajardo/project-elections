@@ -14,10 +14,11 @@ public class AccountDB {
             Connection connection = ConnectionUtil.getConnection();
     
             String query = "INSERT INTO `accounts` ("
-                         + "`uuid`, `location_id`, `first_name`, `middle_name`, "
-                         + "`last_name`, `username`, `email`, `password`, "
+                         + "`uuid`, `location_id`, `first_name`, "
+                         + "`middle_name`, `last_name`, `suffix`, "
+                         + "`username`, `email`, `password`, "
                          + "`dt_last_signin`, `dt_vote_recorded`"
-                         + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                         + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
     
             statement.setString(1, account.getUuid());
@@ -25,18 +26,19 @@ public class AccountDB {
             statement.setString(3, account.getFirstName());
             statement.setString(4, account.getMiddleName());
             statement.setString(5, account.getLastName());
-            statement.setString(6, account.getUsername());
-            statement.setString(7, account.getEmail());
-            statement.setString(8, account.getPassword());
+            statement.setString(6, account.getSuffix());
+            statement.setString(7, account.getUsername());
+            statement.setString(8, account.getEmail());
+            statement.setString(9, account.getPassword());
             if (account.getLastSignIn() != null) {
-                statement.setTimestamp(9, new Timestamp(account.getLastSignIn().getTime()));
-            } else {
-                statement.setTimestamp(9, null);
-            }
-            if (account.getVoteRecorded() != null) {
-                statement.setTimestamp(10, new Timestamp(account.getVoteRecorded().getTime()));
+                statement.setTimestamp(10, new Timestamp(account.getLastSignIn().getTime()));
             } else {
                 statement.setTimestamp(10, null);
+            }
+            if (account.getVoteRecorded() != null) {
+                statement.setTimestamp(11, new Timestamp(account.getVoteRecorded().getTime()));
+            } else {
+                statement.setTimestamp(11, null);
             }
 
             statement.executeUpdate();
@@ -65,11 +67,12 @@ public class AccountDB {
                 item.setFirstName(results.getString(4));
                 item.setMiddleName(results.getString(5));
                 item.setLastName(results.getString(6));
-                item.setUsername(results.getString(7));
-                item.setEmail(results.getString(8));
-                item.setPassword(results.getString(9));
-                item.setLastSignIn(results.getTimestamp(10));
-                item.setVoteRecorded(results.getTimestamp(11));
+                item.setSuffix(results.getString(7));
+                item.setUsername(results.getString(8));
+                item.setEmail(results.getString(9));
+                item.setPassword(results.getString(10));
+                item.setLastSignIn(results.getTimestamp(11));
+                item.setVoteRecorded(results.getTimestamp(12));
                 itemList.add(item);
             }
         } finally {
@@ -98,11 +101,12 @@ public class AccountDB {
                 account.setFirstName(results.getString(4));
                 account.setMiddleName(results.getString(5));
                 account.setLastName(results.getString(6));
-                account.setUsername(results.getString(7));
-                account.setEmail(results.getString(8));
-                account.setPassword(results.getString(9));
-                account.setLastSignIn(results.getTimestamp(10));
-                account.setVoteRecorded(results.getTimestamp(11));
+                account.setSuffix(results.getString(7));
+                account.setUsername(results.getString(8));
+                account.setEmail(results.getString(9));
+                account.setPassword(results.getString(10));
+                account.setLastSignIn(results.getTimestamp(11));
+                account.setVoteRecorded(results.getTimestamp(12));
             }
         } finally {
             if (statement != null) {
@@ -130,11 +134,12 @@ public class AccountDB {
                 account.setFirstName(results.getString(4));
                 account.setMiddleName(results.getString(5));
                 account.setLastName(results.getString(6));
-                account.setUsername(results.getString(7));
-                account.setEmail(results.getString(8));
-                account.setPassword(results.getString(9));
-                account.setLastSignIn(results.getTimestamp(10));
-                account.setVoteRecorded(results.getTimestamp(11));
+                account.setSuffix(results.getString(7));
+                account.setUsername(results.getString(8));
+                account.setEmail(results.getString(9));
+                account.setPassword(results.getString(10));
+                account.setLastSignIn(results.getTimestamp(11));
+                account.setVoteRecorded(results.getTimestamp(12));
             }
         } finally {
             if (statement != null) {
@@ -163,11 +168,12 @@ public class AccountDB {
                 account.setFirstName(results.getString(4));
                 account.setMiddleName(results.getString(5));
                 account.setLastName(results.getString(6));
-                account.setUsername(results.getString(7));
-                account.setEmail(results.getString(8));
-                account.setPassword(results.getString(9));
-                account.setLastSignIn(results.getTimestamp(10));
-                account.setVoteRecorded(results.getTimestamp(11));
+                account.setSuffix(results.getString(7));
+                account.setUsername(results.getString(8));
+                account.setEmail(results.getString(9));
+                account.setPassword(results.getString(10));
+                account.setLastSignIn(results.getTimestamp(11));
+                account.setVoteRecorded(results.getTimestamp(12));
                 
                 String hashedPassword = DigestUtils.sha256Hex(password);
                 if (!account.getPassword().equals(hashedPassword)) {
@@ -193,6 +199,7 @@ public class AccountDB {
                          + "    `first_name`=?,"
                          + "    `middle_name`=?,"
                          + "    `last_name`=?,"
+                         + "    `suffix`=?,"
                          + "    `username`=?,"
                          + "    `email`=?,"
                          + "    `password`=?,"
@@ -206,20 +213,21 @@ public class AccountDB {
             statement.setString(3, account.getFirstName());
             statement.setString(4, account.getMiddleName());
             statement.setString(5, account.getLastName());
-            statement.setString(6, account.getUsername());
-            statement.setString(7, account.getEmail());
-            statement.setString(8, account.getPassword());
+            statement.setString(6, account.getSuffix());
+            statement.setString(7, account.getUsername());
+            statement.setString(8, account.getEmail());
+            statement.setString(9, account.getPassword());
             if (account.getLastSignIn() != null) {
-                statement.setTimestamp(9, new Timestamp(account.getLastSignIn().getTime()));
-            } else {
-                statement.setTimestamp(9, null);
-            }
-            if (account.getVoteRecorded() != null) {
-                statement.setTimestamp(10, new Timestamp(account.getVoteRecorded().getTime()));
+                statement.setTimestamp(10, new Timestamp(account.getLastSignIn().getTime()));
             } else {
                 statement.setTimestamp(10, null);
             }
-            statement.setInt(11, account.getId());
+            if (account.getVoteRecorded() != null) {
+                statement.setTimestamp(11, new Timestamp(account.getVoteRecorded().getTime()));
+            } else {
+                statement.setTimestamp(11, null);
+            }
+            statement.setInt(12, account.getId());
             statement.executeUpdate();
         } finally {
             if (statement != null) {

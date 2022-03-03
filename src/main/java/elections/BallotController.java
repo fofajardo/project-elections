@@ -11,8 +11,8 @@ import java.util.*;
 import elections.data.*;
 import elections.models.*;
 
-@WebServlet("/vote/*")
-public class VoteController extends HttpServlet {
+@WebServlet("/ballot/*")
+public class BallotController extends HttpServlet {
     private static final long serialVersionUID = 1;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,8 +50,6 @@ public class VoteController extends HttpServlet {
 	}
 
 	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("pageSubtitle", "Answer Ballot");
-
         try {
             Account account = AuthManager.getCurrentAccount(request, response);
             Location currentLocation = LocationDB.readId(account.getLocationId());
@@ -79,7 +77,7 @@ public class VoteController extends HttpServlet {
             e.printStackTrace();
         }
 
-        return "/views/voteMain.jsp";
+        return "/views/ballotAnswer.jsp";
 	}
 
 	private static final String parameterPrefix = "vote-position-";
@@ -161,6 +159,6 @@ public class VoteController extends HttpServlet {
             // Ignore exception from failed account update
         }
 	    
-	    return "/views/voteSubmit.jsp";
+	    return "/views/ballotSubmit.jsp";
 	}
 }

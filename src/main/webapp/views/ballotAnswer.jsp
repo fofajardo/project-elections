@@ -1,10 +1,11 @@
-<%@ include file="_header.jsp" %>
-
 <%@ page import="elections.data.*" %>
 <%@ page import="elections.models.*" %>
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="pageSubtitle" value="Vote Now"/>
+
+<%@ include file="_header.jsp" %>
 
 <script>
     window.addEventListener("load", function () {

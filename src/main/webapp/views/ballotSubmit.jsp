@@ -1,15 +1,16 @@
-<%@ include file="_header.jsp" %>
-
 <%@ page import="elections.data.*" %>
 <%@ page import="elections.models.*" %>
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="pageSubtitle" value="Ballot Submission"/>
+
+<%@ include file="_header.jsp" %>
 
 <div class="container">
     <div class="my-5 text-center">
         <img class="d-block mx-auto mb-4" src="<c:url value='/assets/images/done.svg'/>" width="200" height="200">
-        <h1 class="display-5 fw-bold">Your vote has been submitted</h1>
+        <h1 class="display-5 fw-bold">Your ballot has been submitted</h1>
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4">
                 Only one vote per person is allowed.

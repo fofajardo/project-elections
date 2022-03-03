@@ -41,6 +41,18 @@ public class AuthManager {
         return null;
     }
 
+    public static boolean isBallotSubmitted(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        Account account = getCurrentAccount(request, response);
+        if (account != null) {
+            Date ballotSubmissionDate = account.getVoteRecorded();
+            return (ballotSubmissionDate != null);
+        }
+        return false;
+    }
+    
     public static boolean signIn(
             HttpServletRequest request,
             HttpServletResponse response,

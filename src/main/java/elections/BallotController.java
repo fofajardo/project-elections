@@ -14,6 +14,7 @@ import elections.models.*;
 @WebServlet("/ballot/*")
 public class BallotController extends HttpServlet {
     private static final long serialVersionUID = 1;
+    private static final String statusUrl = "/ballot/status";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    if (AuthManager.redirectGuest(request, response)) {
@@ -21,15 +22,21 @@ public class BallotController extends HttpServlet {
 	    }
 
 	    String requestURI = request.getRequestURI();
-	    String url = "";
+	    String url = null;
 
 	    if (requestURI.endsWith("/answer")) {
 	        url = goAnswer(request, response);
+	    } else if (requestURI.endsWith("/status")) {
+	        url = goStatus(request, response);
 	    }
 
-        getServletContext()
-            .getRequestDispatcher(url)
-            .forward(request, response);
+        if (url == null) {
+            response.sendError(404);
+        } else if (!url.isBlank()) {
+            getServletContext()
+                .getRequestDispatcher(url)
+                .forward(request, response);
+        }
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,19 +45,28 @@ public class BallotController extends HttpServlet {
         }
 
         String requestURI = request.getRequestURI();
-	    String url = "";
+	    String url = null;
 
 	    if (requestURI.endsWith("/submit")) {
             url = goSubmit(request, response);
         }
 
-	    getServletContext()
-            .getRequestDispatcher(url)
-            .forward(request, response);
+        if (url == null) {
+            response.sendError(404);
+        } else if (!url.isBlank()) {
+            getServletContext()
+                .getRequestDispatcher(url)
+                .forward(request, response);
+        }
 	}
-
+	
 	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
+	    if (AuthManager.isBallotSubmitted(request, response)) {
+	        response.sendRedirect(request.getContextPath() + statusUrl);
+	        return "";
+	    }
+
+	    try {
             Account account = AuthManager.getCurrentAccount(request, response);
             Location currentLocation = LocationDB.readId(account.getLocationId());
             request.setAttribute("currentLocation", currentLocation);
@@ -83,82 +99,93 @@ public class BallotController extends HttpServlet {
 	private static final String parameterPrefix = "vote-position-";
 	
 	private String goSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ArrayList<Position> positions = null;
-        try {
-            positions = PositionDB.read();
-        } catch (SQLException e) {
-            positions = new ArrayList<Position>();
-        }
-
-        Account account = AuthManager.getCurrentAccount(request, response);
-
-        Map<String, String[]> parameters = request.getParameterMap();
-	    Iterator<String> iterator = parameters.keySet().iterator();
-        boolean failedValidation = false;
-
-	    while (iterator.hasNext()) {
-	        String key = iterator.next();
-            String[] keyParts = key.split("-");
-
-	        // Ignore parameters that do not match the prefix or 
-            // is not equal to the expected number of parts
-	        if (!key.startsWith(parameterPrefix) && keyParts.length == 3) {
-	            continue;
-	        }
-
-            int voteLimit = 1;
-
-            boolean isPartylist = (keyParts[2].equals("partylist"));
-	        if (!isPartylist) {
-	            int positionId = 0;
-                try {
-                    positionId = Integer.parseInt(keyParts[2]);                
-                } catch (Exception e) {
-                    continue;
-                }
-
-                Position position = positions.get(positionId - 1);
-                voteLimit = position.getVoteLimit();
-	        }
-
-	        String[] values = parameters.get(key);
-            if (values.length != voteLimit) {
-                failedValidation = true;
-                break;
+        if (!AuthManager.isBallotSubmitted(request, response)) {
+            ArrayList<Position> positions = null;
+            try {
+                positions = PositionDB.read();
+            } catch (SQLException e) {
+                positions = new ArrayList<Position>();
             }
-
-            // Add votes to database
-	        for (int i = 0; i < values.length; i++) {
-                try {
-    	            Response vote = new Response();
-    	            int targetId = 0;
-    	                targetId = Integer.parseInt(values[i]);                
-    	            
-    	            vote.setVoterId(account.getId());
-    	            if (isPartylist) {
-    	                vote.setPartylistId(targetId);
-    	            } else {
-    	                vote.setCandidateId(targetId);
-    	            }
-
-                    ResponseDB.create(vote);
-                } catch (Exception e) {
-                    continue;
+    
+            Account account = AuthManager.getCurrentAccount(request, response);
+    
+            Map<String, String[]> parameters = request.getParameterMap();
+    	    Iterator<String> iterator = parameters.keySet().iterator();
+            boolean failedValidation = false;
+    
+    	    while (iterator.hasNext()) {
+    	        String key = iterator.next();
+                String[] keyParts = key.split("-");
+    
+    	        // Ignore parameters that do not match the prefix or 
+                // is not equal to the expected number of parts
+    	        if (!key.startsWith(parameterPrefix) && keyParts.length == 3) {
+    	            continue;
+    	        }
+    
+                int voteLimit = 1;
+    
+                boolean isPartylist = (keyParts[2].equals("partylist"));
+    	        if (!isPartylist) {
+    	            int positionId = 0;
+                    try {
+                        positionId = Integer.parseInt(keyParts[2]);                
+                    } catch (Exception e) {
+                        continue;
+                    }
+    
+                    Position position = positions.get(positionId - 1);
+                    voteLimit = position.getVoteLimit();
+    	        }
+    
+    	        String[] values = parameters.get(key);
+                if (values.length != voteLimit) {
+                    failedValidation = true;
+                    break;
                 }
-	        }
-	    }
-
-	    if (failedValidation) {
-	        return goAnswer(request, response);
-	    }
-
-	    account.setVoteRecorded(Date.from(Instant.now()));
-	    try {
-            AccountDB.update(account);
-        } catch (SQLException e) {
-            // Ignore exception from failed account update
+    
+                // Add votes to database
+    	        for (int i = 0; i < values.length; i++) {
+                    try {
+        	            Response vote = new Response();
+        	            int targetId = 0;
+        	                targetId = Integer.parseInt(values[i]);                
+        	            
+        	            vote.setVoterId(account.getId());
+        	            if (isPartylist) {
+        	                vote.setPartylistId(targetId);
+        	            } else {
+        	                vote.setCandidateId(targetId);
+        	            }
+    
+                        ResponseDB.create(vote);
+                    } catch (Exception e) {
+                        continue;
+                    }
+    	        }
+    	    }
+    
+    	    if (failedValidation) {
+    	        return goAnswer(request, response);
+    	    }
+    
+    	    account.setVoteRecorded(Date.from(Instant.now()));
+    	    try {
+                AccountDB.update(account);
+            } catch (SQLException e) {
+                // Ignore exception from failed account update
+            }
         }
-	    
-	    return "/views/ballotSubmit.jsp";
+
+	    response.sendRedirect(request.getContextPath() + statusUrl);
+	    return "";
 	}
+	
+    private String goStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (AuthManager.isBallotSubmitted(request, response)) {
+            return "/views/ballotSubmit.jsp";
+        }
+        response.sendRedirect(request.getContextPath());
+        return "";
+    }
 }

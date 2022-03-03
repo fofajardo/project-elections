@@ -228,7 +228,7 @@
             </div>
         </div>
     </div>
-    <div class="mt-3 -grid gap-2 d-md-flex justify-content-md-end"">
+    <div class="mt-3-grid gap-2 d-md-flex justify-content-md-end">
         <input type="submit" value="Submit" class="btn btn-primary me-md-2">
         <input type="reset" value="Reset" class="btn btn-secondary">
     </div>

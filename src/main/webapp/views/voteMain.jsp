@@ -117,7 +117,14 @@
                  data-vote-limit="${position.getVoteLimit()}"
                  data-vote-position="${position.getId()}"
                  aria-labelledby="heading-${positionStatus.index}">
-                <div class="accordion-body row">
+                <div class="accordion-body">
+                <c:if test="${position.getVoteLimit() > 1}">
+                    <c:set var="candidatePlural" value="s"/>
+                </c:if>
+                <div id="alert-${position.getId()}" class="alert alert-danger alert-validation invisible" role="alert">
+                    You must vote for ${position.getVoteLimit()} candidate<c:out value="${candidatePlural}"/> in this position.
+                </div>
+                <div class="row">
                 <c:forEach items="${candidates.get(positionStatus.index)}" var="candidate" varStatus="candidateStatus">
                     <c:if test="${candidateStatus.index % maxRows[positionStatus.index] == 0}">
                         <c:if test="${rowAdded}">
@@ -149,11 +156,6 @@
                     </c:if>
                 </c:forEach>
                 </div>
-                <c:if test="${position.getVoteLimit() > 1}">
-                    <c:set var="candidatePlural" value="s"/>
-                </c:if>
-                <div id="alert-${position.getId()}" class="alert alert-danger alert-validation invisible ms-4 me-4" role="alert">
-                    You must vote for ${position.getVoteLimit()} candidate<c:out value="${candidatePlural}"/> in this position.
                 </div>
             </div>
         </div>
@@ -183,7 +185,11 @@
                  data-vote-limit="1"
                  data-vote-position="partylist"
                  aria-labelledby="heading-partylist">
-                <div class="accordion-body row">
+                <div class="accordion-body">
+                <div id="alert-partylist" class="alert alert-danger alert-validation invisible" role="alert">
+                    You must vote for only 1 party list.
+                </div>
+                <div class="row">
                 <c:forEach items="${partylists}" var="partylist" varStatus="partylistStatus">
                     <c:if test="${partylistStatus.index % partylistMaxRows == 0}">
                         <c:if test="${rowAdded}">
@@ -218,8 +224,6 @@
                     </c:if>
                 </c:forEach>
                 </div>
-                <div id="alert-partylist" class="alert alert-danger alert-validation invisible ms-4 me-4" role="alert">
-                    You must vote for only 1 party list.
                 </div>
             </div>
         </div>

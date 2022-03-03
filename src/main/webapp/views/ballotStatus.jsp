@@ -3,7 +3,7 @@
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="pageSubtitle" value="Ballot Submission"/>
+<c:set var="pageSubtitle" value="Your Ballot Status"/>
 
 <%@ include file="_header.jsp" %>
 

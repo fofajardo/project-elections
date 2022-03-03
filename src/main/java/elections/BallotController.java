@@ -93,7 +93,7 @@ public class BallotController extends HttpServlet {
             e.printStackTrace();
         }
 
-        return "/views/ballotAnswer.jsp";
+        return "/views/ballotForm.jsp";
 	}
 
 	private static final String parameterPrefix = "vote-position-";
@@ -183,7 +183,7 @@ public class BallotController extends HttpServlet {
 	
     private String goStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (AuthManager.isBallotSubmitted(request, response)) {
-            return "/views/ballotSubmit.jsp";
+            return "/views/ballotStatus.jsp";
         }
         response.sendRedirect(request.getContextPath());
         return "";

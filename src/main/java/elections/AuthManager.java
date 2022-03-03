@@ -18,7 +18,7 @@ public class AuthManager {
         HttpSession session = request.getSession();
         Object accountId = session.getAttribute("accountId");
         if (accountId == null) {
-            response.sendRedirect("/");
+            response.sendRedirect(request.getContextPath());
             return true;
         }
         return false;

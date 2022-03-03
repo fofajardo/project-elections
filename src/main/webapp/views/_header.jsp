@@ -21,7 +21,7 @@
         <header class="p-2 shadow-sm sticky-top bg-white">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
-                    <a href="/" class="d-flex align-items-center text-decoration-none">
+                    <a href="<c:url value='/'/>" class="d-flex align-items-center text-decoration-none">
                         <img src="<c:url value='/assets/branding/logo-32.svg'/>" width="160" height="32"/>
                     </a>
     

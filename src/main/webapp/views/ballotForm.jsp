@@ -145,6 +145,9 @@
                                 <c:if test="${candidate.getMiddleName() != null}">
                                     ${candidate.getMiddleName()}
                                 </c:if>
+                                <c:if test="${candidate.getSuffix() != null}">
+                                    ${candidate.getSuffix()}
+                                </c:if>
                                 <c:if test="${candidate.getAttachedParty() != null}">
                                     (${candidate.getAttachedParty().getAlias()})
                                 </c:if>

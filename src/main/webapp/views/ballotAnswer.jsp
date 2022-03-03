@@ -87,7 +87,7 @@
         <span class="h6">${currentLocation.getName()}</span>
     </div>
     <form id="ballot-form"
-          action="<c:url value='/vote/submit'/>"
+          action="<c:url value='/ballot/submit'/>"
           method="post"
           class="needs-validation"
           novalidate>

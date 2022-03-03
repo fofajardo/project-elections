@@ -49,6 +49,29 @@ public class LocationDB {
         return itemList;
     }
 
+    public static Location readId(int id) throws SQLException {
+        Location item = null;
+        PreparedStatement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT * FROM `locations` WHERE `id`=?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet results = statement.executeQuery();
+            if (results.next()) {
+                item = new Location();
+                item.setId(results.getInt(1));
+                item.setName(results.getString(2));
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return item;
+    }
+    
     public static void update(Location location) throws SQLException {
         PreparedStatement statement = null;
         try {
@@ -56,7 +79,7 @@ public class LocationDB {
     
             String query = "UPDATE `locations` SET"
                          + "    `location_name`=? "
-                         + "WHERE `id`=?";
+                         + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);
     
             statement.setString(1, location.getName());

@@ -62,7 +62,7 @@ public class PositionDB {
                          + "    `position_name`=?, "
                          + "    `position_alias`=?, "
                          + "    `vote_limit`=? "
-                         + "WHERE `id`=?";
+                         + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);
     
             statement.setString(1, position.getName());

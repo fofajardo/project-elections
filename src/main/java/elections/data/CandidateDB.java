@@ -119,7 +119,7 @@ public class CandidateDB {
                          + "    `first_name`=?,"
                          + "    `middle_name`=?,"
                          + "    `last_name`=?"
-                         + "WHERE `id`=?";
+                         + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);
     
             statement.setInt(1, candidate.getPositionId());

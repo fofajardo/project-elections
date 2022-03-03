@@ -9,7 +9,7 @@ public class ResponseDB {
         PreparedStatement statement = null;
         try {
             Connection connection = ConnectionUtil.getConnection();
-    
+
             String query = "INSERT INTO `responses` "
                          + "(`voter_id`, `candidate_id`, `partylist_id`)"
                          + "VALUES (?, ?, ?)";

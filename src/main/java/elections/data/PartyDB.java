@@ -119,7 +119,7 @@ public class PartyDB {
                          + "    `party_name`=?, "
                          + "    `party_alias`=?, "
                          + "    `is_partylist`=? "
-                         + "WHERE `id`=?";
+                         + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);
     
             statement.setInt(1, party.getCustomOrder());

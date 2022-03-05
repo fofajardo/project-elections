@@ -32,13 +32,7 @@ public class AccountController extends HttpServlet {
             url = goSignOut(request, response);
         }
         
-        if (url == null) {
-            response.sendError(404);
-        } else if (!url.isBlank()) {
-            getServletContext()
-                .getRequestDispatcher(url)
-                .forward(request, response);
-        }
+        doRespond(request, response, url);
 	}
 
     protected void doPost(
@@ -54,14 +48,22 @@ public class AccountController extends HttpServlet {
             url = goAuthenticate(request, response, true);
         }
         
+        doRespond(request, response, url);
+	}
+
+    private void doRespond(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String url)
+            throws ServletException, IOException {
         if (url == null) {
             response.sendError(404);
         } else if (!url.isBlank()) {
             getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-        }
-	}
+        }       
+    }
 
     private String goSignIn(
             HttpServletRequest request,

@@ -30,13 +30,7 @@ public class BallotController extends HttpServlet {
 	        url = goStatus(request, response);
 	    }
 
-        if (url == null) {
-            response.sendError(404);
-        } else if (!url.isBlank()) {
-            getServletContext()
-                .getRequestDispatcher(url)
-                .forward(request, response);
-        }
+	    doRespond(request, response, url);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,14 +44,22 @@ public class BallotController extends HttpServlet {
 	    if (requestURI.endsWith("/submit")) {
             url = goSubmit(request, response);
         }
+	    
+	    doRespond(request, response, url);
+	}
 
-        if (url == null) {
+	private void doRespond(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String url)
+            throws ServletException, IOException {
+	    if (url == null) {
             response.sendError(404);
         } else if (!url.isBlank()) {
             getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-        }
+        }	    
 	}
 	
 	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

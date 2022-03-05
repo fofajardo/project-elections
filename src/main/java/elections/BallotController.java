@@ -14,7 +14,7 @@ import elections.models.*;
 @WebServlet("/ballot/*")
 public class BallotController extends HttpServlet {
     private static final long serialVersionUID = 1;
-    private static final String statusUrl = "/ballot/status";
+    public static final String statusUrl = "/ballot/status";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    if (AuthManager.redirectGuest(request, response)) {

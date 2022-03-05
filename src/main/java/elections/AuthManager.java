@@ -73,7 +73,30 @@ public class AuthManager {
         }
         return false;
     }
-    
+
+    public static boolean signInByUuid(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String uuid)
+            throws ServletException, IOException, SQLException {
+        if (uuid == null) {
+            return false;
+        }
+        HttpSession session = request.getSession();
+        Account account = AccountDB.readUuid(uuid);
+        if (account != null) {
+            account.setLastSignIn(Date.from(Instant.now()));
+            try {
+                AccountDB.update(account);
+            } catch (SQLException e) {
+                return false;
+            }
+            session.setAttribute("accountId", account.getId());
+            return true;
+        }
+        return false;
+    }
+
     public static void signOut(
             HttpServletRequest request,
             HttpServletResponse response)

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Date;
-
+import org.apache.commons.lang3.StringUtils;
 import elections.models.*;
 import elections.data.*;
 import jakarta.servlet.ServletException;
@@ -58,6 +58,9 @@ public class AuthManager {
             String emailOrUsername,
             String password)
             throws ServletException, IOException, SQLException {
+        if (StringUtils.isBlank(emailOrUsername) || StringUtils.isBlank(password)) {
+            return false;
+        }
         HttpSession session = request.getSession();
         Account account = AccountDB.readCredentials(emailOrUsername, password);
         if (account != null) {

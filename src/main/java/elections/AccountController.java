@@ -5,11 +5,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+
+import elections.data.AccountDB;
+import elections.models.Account;
 
 @WebServlet("/accounts/*")
 public class AccountController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
 	protected void doGet(
 	        HttpServletRequest request,
 	        HttpServletResponse response)
@@ -61,7 +68,8 @@ public class AccountController extends HttpServlet {
             HttpServletResponse response,
             boolean useQr)
             throws ServletException, IOException {
-        if (AuthManager.getCurrentAccount(request, response) != null) {
+        Account account = getCurrentAccount(request);
+        if (account != null) {
             return redirectStatus(request, response);
         }
         if (useQr) {
@@ -74,7 +82,8 @@ public class AccountController extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        AuthManager.signOut(request, response);
+        HttpSession session = request.getSession();
+        session.removeAttribute("accountId");
         response.sendRedirect(request.getContextPath());
         return "";
     }
@@ -84,24 +93,33 @@ public class AccountController extends HttpServlet {
             HttpServletResponse response,
             boolean useQr)
             throws ServletException, IOException {
-        boolean isAuthenticated = false;
+        Account account = null;
 
         try {
             if (useQr) {
-                String Uuid = request.getParameter("auth-uuid");
-                isAuthenticated = AuthManager.signInByUuid(request, response, Uuid);
+                String uuid = request.getParameter("auth-uuid");
+                if (StringUtils.isNotBlank(uuid)) {
+                    account = AccountDB.readUuid(uuid);
+                }
                 request.setAttribute("useQr", true);;
             } else {
                 String emailOrUsername = request.getParameter("auth-emailOrUsername");
                 String password = request.getParameter("auth-password");
-                isAuthenticated = AuthManager.signIn(request, response, emailOrUsername, password);
+                if (StringUtils.isNotBlank(emailOrUsername)
+                        || StringUtils.isNotBlank(password)) {
+                    account = AccountDB.readCredentials(emailOrUsername, password);
+                }
+            }
+
+            if (account != null) {
+                HttpSession session = request.getSession();
+                account.setLastSignIn(Date.from(Instant.now()));
+                AccountDB.update(account);
+                session.setAttribute("accountId", account.getId());
+                return redirectStatus(request, response);
             }
         } catch (Exception e) {
-            isAuthenticated = false;
-        }
-
-        if (isAuthenticated) {
-            return redirectStatus(request, response);
+            return null;
         }
 
         request.setAttribute("authInvalid", true);
@@ -114,5 +132,34 @@ public class AccountController extends HttpServlet {
             throws ServletException, IOException {
         response.sendRedirect(request.getContextPath() + BallotController.statusUrl);
         return "";
+    }
+
+    public static boolean redirectGuest(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        Account account = getCurrentAccount(request);
+        if (account == null) {
+            response.sendRedirect(request.getContextPath());
+            return true;
+        }
+        return false;
+    }
+
+    public static Account getCurrentAccount(HttpServletRequest request) {
+        Object account = request.getAttribute("account");
+        if (account != null && account.getClass() == Account.class) {
+            return (Account)account;
+        }
+        return null;
+    }
+
+    public static boolean isBallotSubmitted(HttpServletRequest request) {
+        Account account = getCurrentAccount(request);
+        if (account != null) {
+            Date ballotSubmissionDate = account.getVoteRecorded();
+            return (ballotSubmissionDate != null);
+        }
+        return false;
     }
 }

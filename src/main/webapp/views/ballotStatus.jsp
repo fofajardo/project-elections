@@ -20,13 +20,13 @@
                 Your ballot has been submitted
             </c:when>
             <c:otherwise>
-                Hi, ${voter.getFirstName()}
-                <c:if test="${voter.getMiddleName() != null}">
-                    ${voter.getMiddleName()}
+                Hi, ${account.getFirstName()}
+                <c:if test="${account.getMiddleName() != null}">
+                    ${account.getMiddleName()}
                 </c:if>
-                    ${voter.getLastName()}
-                <c:if test="${voter.getSuffix() != null}">
-                    ${voter.getSuffix()}
+                    ${account.getLastName()}
+                <c:if test="${account.getSuffix() != null}">
+                    ${account.getSuffix()}
                 </c:if>
             </c:otherwise>
         </c:choose>

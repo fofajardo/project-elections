@@ -17,7 +17,7 @@ public class BallotController extends HttpServlet {
     public static final String statusUrl = "/ballot/status";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    if (AuthManager.redirectGuest(request, response)) {
+	    if (AccountController.redirectGuest(request, response)) {
 	        return;
 	    }
 
@@ -40,7 +40,7 @@ public class BallotController extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (AuthManager.redirectGuest(request, response)) {
+        if (AccountController.redirectGuest(request, response)) {
             return;
         }
 
@@ -61,13 +61,13 @@ public class BallotController extends HttpServlet {
 	}
 	
 	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    if (AuthManager.isBallotSubmitted(request, response)) {
+	    if (AccountController.isBallotSubmitted(request)) {
 	        response.sendRedirect(request.getContextPath() + statusUrl);
 	        return "";
 	    }
 
 	    try {
-            Account account = AuthManager.getCurrentAccount(request, response);
+            Account account = AccountController.getCurrentAccount(request);
             Location currentLocation = LocationDB.readId(account.getLocationId());
             request.setAttribute("currentLocation", currentLocation);
 
@@ -99,7 +99,7 @@ public class BallotController extends HttpServlet {
 	private static final String parameterPrefix = "vote-position-";
 	
 	private String goSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!AuthManager.isBallotSubmitted(request, response)) {
+        if (!AccountController.isBallotSubmitted(request)) {
             ArrayList<Position> positions = null;
             try {
                 positions = PositionDB.read();
@@ -107,7 +107,7 @@ public class BallotController extends HttpServlet {
                 positions = new ArrayList<Position>();
             }
     
-            Account account = AuthManager.getCurrentAccount(request, response);
+            Account account = AccountController.getCurrentAccount(request);
     
             Map<String, String[]> parameters = request.getParameterMap();
     	    Iterator<String> iterator = parameters.keySet().iterator();
@@ -182,10 +182,10 @@ public class BallotController extends HttpServlet {
 	}
 	
     private String goStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (AuthManager.isBallotSubmitted(request, response)) {
+        if (AccountController.isBallotSubmitted(request)) {
             request.setAttribute("ballotSubmitted", true);
         } else {
-            Account account = AuthManager.getCurrentAccount(request, response);
+            Account account = AccountController.getCurrentAccount(request);
             String locationName = "";
             try {
                 Location location = LocationDB.readId(account.getLocationId());
@@ -194,7 +194,6 @@ public class BallotController extends HttpServlet {
                 locationName = "Invalid location";
             }
             request.setAttribute("locationName", locationName);
-            request.setAttribute("voter", AuthManager.getCurrentAccount(request, response));
         }
         return "/views/ballotStatus.jsp";
     }

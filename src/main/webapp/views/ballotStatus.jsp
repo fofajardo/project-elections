@@ -56,7 +56,7 @@
                         <a href="<c:url value='/ballot/answer'/>" class="btn btn-primary btn-lg px-4 gap-3">Vote Now</a>
                     </c:otherwise>
                 </c:choose>
-                <a href="<c:url value='/sign-out'/>" class="btn btn-outline-secondary btn-lg px-4">Sign Out</a>
+                <a href="<c:url value='/accounts/sign-out'/>" class="btn btn-outline-secondary btn-lg px-4">Sign Out</a>
             </div>
         </div>
     </div>

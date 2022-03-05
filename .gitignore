@@ -177,3 +177,9 @@ nb-configuration.xml
 
 .vscode/
 .code-workspace
+
+# =========================
+# Custom
+# =========================
+
+src/main/webapp/tests

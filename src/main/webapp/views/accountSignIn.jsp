@@ -95,11 +95,6 @@
         <div class="col-md-10 mx-auto col-lg-5">
             <form id="login-form" name="loginForm" class="needs-validation" method="post" novalidate>
                 <div class="p-4 m-2 rounded bg-white shadow">
-                    <c:if test="${authInvalid}">
-                        <div class="alert alert-danger" role="alert">
-                            The credentials you've entered does not match any account.
-                        </div>
-                    </c:if>
 <c:choose>
     <c:when test="${useQr}">
                     <script src="<c:url value="/assets/qrcode-scan.min.js"/>" type="text/javascript"></script>
@@ -129,6 +124,11 @@
                         </script>
                         <input type="text" id="auth-uuid" name="auth-uuid" required>
                     </div>
+                    <c:if test="${authInvalid}">
+                        <div class="alert alert-danger" role="alert">
+                            The QR code you've scanned is invalid.
+                        </div>
+                    </c:if>
                     <a href="#" class="w-100 btn btn-lg btn-primary mb-2" onclick="document.getElementById('qr-selector').click();">
                         <i class="bi bi-qr-code-scan"></i>
                         Scan QR Code
@@ -153,6 +153,11 @@
                             Please provide a password.
                         </div>
                     </div>
+                    <c:if test="${authInvalid}">
+                        <div class="alert alert-danger" role="alert">
+                            The credentials you've entered does not match any account.
+                        </div>
+                    </c:if>
                     <button class="w-100 btn btn-lg btn-primary mb-2" type="submit">Sign In</button>
                     <a href="<c:url value='/accounts/sign-in-qr'/>" class="w-100 btn btn-lg btn-outline-secondary">
                         <i class="bi bi-qr-code-scan"></i>

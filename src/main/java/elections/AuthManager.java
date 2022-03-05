@@ -15,9 +15,8 @@ public class AuthManager {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Object accountId = session.getAttribute("accountId");
-        if (accountId == null) {
+        Account account = getCurrentAccount(request, response);
+        if (account == null) {
             response.sendRedirect(request.getContextPath());
             return true;
         }

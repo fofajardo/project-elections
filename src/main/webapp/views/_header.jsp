@@ -17,7 +17,7 @@
         <link href="<c:url value='/assets/bs/bootstrap.min.css'/>" rel="stylesheet">
         <script src="<c:url value='/assets/bs/bootstrap.bundle.min.js'/>"></script>
     </head>
-    <body>
+    <body class="bg-light">
         <header class="p-2 shadow-sm sticky-top bg-white">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">

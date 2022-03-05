@@ -18,6 +18,7 @@
         <script src="<c:url value='/assets/bs/bootstrap.bundle.min.js'/>"></script>
     </head>
     <body class="bg-light">
+    <c:if test="${!hideHeader}">
         <header class="p-2 shadow-sm sticky-top bg-white">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
@@ -32,3 +33,4 @@
                 </div>
             </div>
         </header>
+    </c:if>

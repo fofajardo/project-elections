@@ -53,6 +53,8 @@ public class BallotController extends HttpServlet {
             HttpServletResponse response,
             String url)
             throws ServletException, IOException {
+        request.setAttribute("navActiveBallot", "active");
+
 	    if (url == null) {
             response.sendError(404);
         } else if (!url.isBlank()) {

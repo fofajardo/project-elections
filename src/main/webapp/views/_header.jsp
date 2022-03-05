@@ -13,9 +13,10 @@
         </c:if>
         Halal
         </title>
-        <!-- External resources -->
+        <%-- Bootstrap --%>
         <link href="<c:url value='/assets/bs/bootstrap.min.css'/>" rel="stylesheet">
         <script src="<c:url value='/assets/bs/bootstrap.bundle.min.js'/>"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     </head>
     <body class="bg-light">
     <c:if test="${!hideHeader}">

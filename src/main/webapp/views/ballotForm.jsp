@@ -232,9 +232,19 @@
             </div>
         </div>
     </div>
-    <div class="mt-3-grid gap-2 d-md-flex justify-content-md-end">
-        <input type="submit" value="Submit" class="btn btn-primary me-md-2">
-        <input type="reset" value="Reset" class="btn btn-secondary">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center my-3">
+        <button type="submit" value="Submit" class="btn btn-success col-md">
+            <i class="bi bi-box-arrow-right"></i>
+            Submit
+        </button>
+        <button type="reset" class="btn btn-outline-secondary col-md">
+            <i class="bi bi-backspace"></i>
+            Reset
+        </button>
+        <a href="<c:url value='/ballot/status'/>" class="btn btn-outline-danger col-md">
+            <i class="bi bi-x-circle"></i>
+            Cancel
+        </a>
     </div>
     </form>
 </div>

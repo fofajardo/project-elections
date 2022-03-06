@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = { "", "/home" })
-public class HomeServlet extends HttpServlet {
+public class HomeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(

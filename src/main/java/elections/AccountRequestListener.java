@@ -19,6 +19,7 @@ public class AccountRequestListener implements ServletRequestListener {
             try {
                 Account account = AccountDB.readId((int)accountId);
                 request.setAttribute("account", account);
+                request.setAttribute("ballotSubmitted", account.getVoteRecorded());
             } catch (Exception e) {
                 request.setAttribute("account", null);
             }

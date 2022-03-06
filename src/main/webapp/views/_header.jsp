@@ -22,7 +22,7 @@
     <%-- Header --%>
     <c:if test="${!hideHeader}">
         <%-- Main Navigation --%>
-        <header class="p-2 shadow-sm sticky-top bg-white">
+        <header class="p-2 shadow-sm sticky-top bg-light">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="navbar-light">

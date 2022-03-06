@@ -36,7 +36,7 @@
         <div class="col-lg-6 text-end">
             <h1 class="display-5 fw-bold lh-1 mb-3">Know your candidates</h1>
             <p class="lead">
-                A list of all candidates running for different positions are conveniently available for you.
+                A list of all candidates running for different positions is conveniently available for you.
             </p>
             <div class="d-flex justify-content-end">
                 <a href="<c:url value='/candidates'/>" class="btn btn-primary btn-lg px-4">

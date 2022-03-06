@@ -28,6 +28,8 @@ public class BallotController extends HttpServlet {
 	        url = goAnswer(request, response);
 	    } else if (requestURI.endsWith("/status")) {
 	        url = goStatus(request, response);
+	    } else if (requestURI.endsWith("/receipt")) {
+	        url = goReceipt(request, response);
 	    }
 
 	    doRespond(request, response, url);
@@ -53,8 +55,6 @@ public class BallotController extends HttpServlet {
             HttpServletResponse response,
             String url)
             throws ServletException, IOException {
-        request.setAttribute("navActiveBallot", "active");
-
 	    if (url == null) {
             response.sendError(404);
         } else if (!url.isBlank()) {
@@ -65,6 +65,7 @@ public class BallotController extends HttpServlet {
 	}
 	
 	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    request.setAttribute("navActiveBallot", "active");
 	    Account account = AccountController.getCurrentAccount(request);
 
 	    if (isBallotSubmitted(account)) {
@@ -83,7 +84,7 @@ public class BallotController extends HttpServlet {
             int[] maxRows = new int[positions.size()];
             for (int i = 0; i < positions.size(); i++) {
                 Position item = positions.get(i);
-                ArrayList<Candidate> data = CandidateDB.readFromPosition(item.getId(), true);
+                ArrayList<Candidate> data = CandidateDB.readFromPosition(item.getId());
                 candidates.add(data);
                 maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
             }
@@ -187,6 +188,7 @@ public class BallotController extends HttpServlet {
 	}
 	
     private String goStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("navActiveBallot", "active");
         Account account = AccountController.getCurrentAccount(request);
         if (isBallotSubmitted(account)) {
             request.setAttribute("ballotSubmitted", true);
@@ -201,6 +203,65 @@ public class BallotController extends HttpServlet {
             request.setAttribute("locationName", locationName);
         }
         return "/views/ballotStatus.jsp";
+    }
+
+    private String goReceipt(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("navActiveReceipt", "active");
+        Account account = AccountController.getCurrentAccount(request);
+        if (isBallotSubmitted(account)) {
+            String locationName = "";
+            try {
+                Location location = LocationDB.readId(account.getLocationId());
+                locationName = location.getName();
+                request.setAttribute("locationName", locationName);
+
+                ArrayList<Position> positions;
+                positions = PositionDB.read();
+                request.setAttribute("positions",  positions);
+
+                HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
+                for (int i = 0; i < positions.size(); i++) {
+                    Position position = positions.get(i);
+                    candidates.put(position.getId(), new ArrayList<Candidate>());
+                }
+                
+                ArrayList<Response> candidateVotes = ResponseDB.readFromVoterByCandidate(account.getId());
+                for (int i = 0; i < candidateVotes.size(); i++) {
+                    Response vote = candidateVotes.get(i);
+                    Candidate candidate = vote.getAttachedCandidate();
+                    candidates.get(candidate.getPositionId()).add(candidate);
+                }
+
+                int[] maxRows = new int[positions.size()];
+                for (int i = 0; i < positions.size(); i++) {
+                    Position position = positions.get(i);
+                    ArrayList<Candidate> data = candidates.get(position.getId());
+                    maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
+                }
+
+                request.setAttribute("candidates", candidates);
+                request.setAttribute("maxRows", maxRows);
+
+                ArrayList<Response> partylistVotes = ResponseDB.readFromVoterByPartylist(account.getId());
+                ArrayList<Party> partylists = new ArrayList<>();
+                for (int i = 0; i < partylistVotes.size(); i++) {
+                    Response vote = partylistVotes.get(i);
+                    partylists.add(vote.getAttachedParty());
+                }
+                int partylistMaxRows = partylists.size() / 4 + ((partylists.size() % 4 == 0) ? 0 : 1);
+                request.setAttribute("partylists", partylists);
+                request.setAttribute("partylistMaxRows", partylistMaxRows);
+            } catch (SQLException e) {
+                e.printStackTrace(System.out);
+                return null;
+            }
+
+            return "/views/ballotReceipt.jsp";
+        }
+        return "/views/ballotReceiptEmpty.jsp";
     }
 
     private boolean isBallotSubmitted(Account account) {

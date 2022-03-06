@@ -178,7 +178,7 @@
                             <label class="form-check-label" for="partylist-${partylist.getId()}">
                                 <span class="badge rounded-pill bg-secondary">
                                 <c:choose>
-                                    <c:when test="${partylistStatus.index < 9}">
+                                    <c:when test="${partylist.getCustomOrder() < 9}">
                                         0${partylist.getCustomOrder()}
                                     </c:when>
                                     <c:otherwise>

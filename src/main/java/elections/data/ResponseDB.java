@@ -60,13 +60,18 @@ public class ResponseDB {
         return itemList;
     }
 
-    public static ArrayList<Response> readFromVoter(int voterId) throws SQLException {
+    public static ArrayList<Response> readFromVoterByCandidate(int voterId) throws SQLException {
         ArrayList<Response> itemList = new ArrayList<Response>();
         PreparedStatement statement = null;
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT * FROM `responses` WHERE `voter_id`=?";
+            String query = "SELECT * FROM `responses`"
+                         + "    INNER JOIN `candidates`"
+                         + "        ON `responses`.candidate_id = `candidates`.id"
+                         + "    LEFT JOIN `parties`"
+                         + "        ON `candidates`.partylist_id = `parties`.id"
+                         + "    WHERE `voter_id`=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, voterId);
             ResultSet results = statement.executeQuery();
@@ -75,7 +80,69 @@ public class ResponseDB {
                 Response item = new Response();
                 item.setVoterId(results.getInt(1));
                 item.setCandidateId(results.getInt(2));
+
+                Candidate attachedCandidate = new Candidate();
+                attachedCandidate.setId(results.getInt(4));
+                attachedCandidate.setPositionId(results.getInt(5));
+                attachedCandidate.setPartyId(results.getInt(6));
+                attachedCandidate.setLocationId(results.getInt(7));
+                attachedCandidate.setFirstName(results.getString(8));
+                attachedCandidate.setMiddleName(results.getString(9));
+                attachedCandidate.setLastName(results.getString(10));
+                attachedCandidate.setSuffix(results.getString(11));
+                item.setAttachedCandidate(attachedCandidate);
+
+                int partyId = results.getInt(12);
+                if (partyId > 0) {
+                    Party attachedParty = new Party();
+                    attachedParty.setId(partyId);
+                    attachedParty.setCustomOrder(results.getInt(13));
+                    attachedParty.setName(results.getString(14));
+                    attachedParty.setAlias(results.getString(15));
+                    attachedParty.setPartylist(results.getBoolean(16));
+                    attachedCandidate.setAttachedParty(attachedParty);
+                }
+
+                itemList.add(item);
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return itemList;
+    }
+
+    public static ArrayList<Response> readFromVoterByPartylist(int voterId) throws SQLException {
+        ArrayList<Response> itemList = new ArrayList<Response>();
+        PreparedStatement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT * FROM `responses`"
+                         + "    INNER JOIN `parties`"
+                         + "        ON `responses`.partylist_id = `parties`.id"
+                         + "    WHERE `voter_id`=?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, voterId);
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+                Response item = new Response();
+                item.setVoterId(results.getInt(1));
                 item.setPartylistId(results.getInt(3));
+
+                int partyId = results.getInt(4);
+                if (partyId > 0) {
+                    Party attachedParty = new Party();
+                    attachedParty.setId(partyId);
+                    attachedParty.setCustomOrder(results.getInt(5));
+                    attachedParty.setName(results.getString(6));
+                    attachedParty.setAlias(results.getString(7));
+                    attachedParty.setPartylist(results.getBoolean(8));
+                    item.setAttachedParty(attachedParty);
+                }
+
                 itemList.add(item);
             }
         } finally {

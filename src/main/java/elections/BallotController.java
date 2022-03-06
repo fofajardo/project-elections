@@ -17,20 +17,24 @@ public class BallotController extends HttpServlet {
     public static final String statusUrl = "/ballot/status";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    if (AccountController.redirectGuest(request, response)) {
-	        return;
-	    }
+        String requestURI = request.getRequestURI();
+        String url = null;
 
-	    String requestURI = request.getRequestURI();
-	    String url = null;
-
-	    if (requestURI.endsWith("/answer")) {
-	        url = goAnswer(request, response);
-	    } else if (requestURI.endsWith("/status")) {
-	        url = goStatus(request, response);
-	    } else if (requestURI.endsWith("/receipt")) {
-	        url = goReceipt(request, response);
-	    }
+        if (requestURI.endsWith("/candidates")) {
+            url = goCandidates(request, response);
+        } else {
+            if (AccountController.redirectGuest(request, response)) {
+    	        return;
+    	    }
+    
+    	    if (requestURI.endsWith("/answer")) {
+    	        url = goAnswer(request, response);
+    	    } else if (requestURI.endsWith("/status")) {
+    	        url = goStatus(request, response);
+    	    } else if (requestURI.endsWith("/receipt")) {
+    	        url = goReceipt(request, response);
+    	    }
+        }
 
 	    doRespond(request, response, url);
 	}
@@ -210,6 +214,7 @@ public class BallotController extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("navActiveReceipt", "active");
+        request.setAttribute("isReceipt", true);
         Account account = AccountController.getCurrentAccount(request);
         if (isBallotSubmitted(account)) {
             String locationName = "";
@@ -259,9 +264,44 @@ public class BallotController extends HttpServlet {
                 return null;
             }
 
-            return "/views/ballotReceipt.jsp";
+            return "/views/ballotView.jsp";
         }
         return "/views/ballotReceiptEmpty.jsp";
+    }
+
+    private String goCandidates(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("navActiveCandidates", "active");
+
+        try {
+            ArrayList<Position> positions;
+            positions = PositionDB.read();
+            request.setAttribute("positions",  positions);
+
+            HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
+            int[] maxRows = new int[positions.size()];
+            for (int i = 0; i < positions.size(); i++) {
+                int positionId = positions.get(i).getId();
+                ArrayList<Candidate> data = CandidateDB.readFromPosition(positionId);
+                candidates.put(positionId, data);
+                maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
+            }
+
+            request.setAttribute("candidates", candidates);
+            request.setAttribute("maxRows", maxRows);
+
+            ArrayList<Party> partylists = PartyDB.readPartylist();
+            int partylistMaxRows = partylists.size() / 4 + ((partylists.size() % 4 == 0) ? 0 : 1);
+            request.setAttribute("partylists", partylists);
+            request.setAttribute("partylistMaxRows", partylistMaxRows);
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+        return "/views/ballotView.jsp";
     }
 
     private boolean isBallotSubmitted(Account account) {

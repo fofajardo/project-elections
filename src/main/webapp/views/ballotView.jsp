@@ -3,13 +3,25 @@
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="pageSubtitle" value="Your Ballot Receipt"/>
+<c:set var="pageSubtitle" value="Candidates"/>
+<c:if test="${isReceipt}">
+    <c:set var="pageSubtitle" value="Your Ballot Receipt"/>
+</c:if>
 
 <%@ include file="_header.jsp" %>
 
 <div class="container">
     <div id="ballot-title" class="mt-3">
-        <span class="h3">Ballot Receipt</span>
+        <span class="h3">
+        <c:choose>
+            <c:when test="${isReceipt}">
+                Ballot Receipt
+            </c:when>
+            <c:otherwise>
+                Candidates
+            </c:otherwise>
+        </c:choose>
+        </span>
         <br/>
         <span class="h6">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</span>
         <br/>
@@ -53,6 +65,9 @@
                         <c:set var="rowAdded" value="${true}"/>
                     </c:if>
                     <div class="candidate-box">
+                        <c:if test="${!isReceipt}">
+                        <span class="badge rounded-circle bg-secondary">${candidateStatus.index + 1}</span>
+                        </c:if>
                         ${candidate.getLastName()}, ${candidate.getFirstName()}
                         <c:if test="${candidate.getMiddleName() != null}">
                             ${candidate.getMiddleName()}

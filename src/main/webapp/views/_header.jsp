@@ -76,7 +76,7 @@
             </a>
         </li>
         <li>
-            <a href="<c:url value='/candidates'/>" class="nav-link link-dark ${navActiveCandidates}">
+            <a href="<c:url value='/ballot/candidates'/>" class="nav-link link-dark ${navActiveCandidates}">
                 <i class="bi bi-people-fill me-2"></i>
                 Candidates
             </a>

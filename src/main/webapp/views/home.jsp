@@ -39,7 +39,7 @@
                 A list of all candidates running for different positions is conveniently available for you.
             </p>
             <div class="d-flex justify-content-end">
-                <a href="<c:url value='/candidates'/>" class="btn btn-primary btn-lg px-4">
+                <a href="<c:url value='/ballot/candidates'/>" class="btn btn-primary btn-lg px-4">
                     View Candidates
                 </a>
             </div>

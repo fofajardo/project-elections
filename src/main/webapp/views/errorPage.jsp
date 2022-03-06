@@ -1,6 +1,7 @@
-<%@ include file="_header.jsp" %>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="pageSubtitle" value="Page not found"/>
+
+<%@ include file="_header.jsp" %>
 
 <div class="container">
     <div class="my-5 text-center">

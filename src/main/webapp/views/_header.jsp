@@ -94,7 +94,7 @@
             </a>
         </li>
         <li>
-            <a href="<c:url value='/ballot/status'/>" class="nav-link link-dark ${navActiveReceipt}">
+            <a href="<c:url value='/ballot/receipt'/>" class="nav-link link-dark ${navActiveReceipt}">
                 <i class="bi bi-receipt me-2"></i>
                 View Ballot Receipt
             </a>

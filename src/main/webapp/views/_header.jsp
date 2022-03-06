@@ -13,6 +13,7 @@
         </c:if>
         Halal
         </title>
+        <link href="<c:url value='/assets/common.css'/>" rel="stylesheet">
         <%-- Bootstrap --%>
         <link href="<c:url value='/assets/bs/bootstrap.min.css'/>" rel="stylesheet">
         <script src="<c:url value='/assets/bs/bootstrap.bundle.min.js'/>"></script>

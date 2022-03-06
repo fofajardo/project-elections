@@ -48,38 +48,6 @@
     });
 </script>
 
-<style>
-.alert-validation {
-  display: none;
-}
-
-.custom-validated .alert-validation:not(.invisible) {
-  display: block;
-}
-
-.candidate-box {
-  border-radius: 0.25rem;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  border: 1px solid transparent;
-  transition: all 300ms;
-  padding: 0.5rem;
-  margin-bottom: 10px;
-  border-color: rgba(0, 0, 0, 0.125);
-  height: 65px;
-  display: block;
-  font-weight: 500;
-  -webkit-user-select: none;  
-  -moz-user-select: none;    
-  -ms-user-select: none;      
-  user-select: none;
-}
-
-.candidate-box:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-</style>
-
 <div class="container">
     <div id="ballot-title" class="mt-3 mb-3">
         <span class="h3">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</span>

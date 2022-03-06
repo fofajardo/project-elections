@@ -63,18 +63,16 @@ public class CandidateDB {
         return itemList;
     }
 
-    public static ArrayList<Candidate> readFromPosition(int positionId, boolean attachParty) throws SQLException {
+    public static ArrayList<Candidate> readFromPosition(
+            int positionId) throws SQLException {
         ArrayList<Candidate> itemList = new ArrayList<Candidate>();
         PreparedStatement statement = null;
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT * FROM `candidates` WHERE `position_id`=?";
-            if (attachParty) {
-                query = "SELECT * FROM `candidates` LEFT JOIN `parties` "
-                      + "ON `candidates`.partylist_id = `parties`.id "
-                      + "WHERE `position_id`=? ORDER BY `last_name`";
-            }
+            String query = "SELECT * FROM `candidates` LEFT JOIN `parties` "
+                         + "ON `candidates`.partylist_id = `parties`.id "
+                         + "WHERE `position_id`=? ORDER BY `last_name`";
             statement = connection.prepareStatement(query);
             statement.setInt(1, positionId);
             ResultSet results = statement.executeQuery();
@@ -89,18 +87,18 @@ public class CandidateDB {
                 item.setMiddleName(results.getString(6));
                 item.setLastName(results.getString(7));
                 item.setSuffix(results.getString(8));
-                if (attachParty) {
-                    int partyId = results.getInt(9);
-                    if (partyId > 0) {
-                        Party attachedParty = new Party();
-                        attachedParty.setId(partyId);
-                        attachedParty.setCustomOrder(results.getInt(10));
-                        attachedParty.setName(results.getString(11));
-                        attachedParty.setAlias(results.getString(12));
-                        attachedParty.setPartylist(results.getBoolean(13));
-                        item.setAttachedParty(attachedParty);
-                    }
+
+                int partyId = results.getInt(9);
+                if (partyId > 0) {
+                    Party attachedParty = new Party();
+                    attachedParty.setId(partyId);
+                    attachedParty.setCustomOrder(results.getInt(10));
+                    attachedParty.setName(results.getString(11));
+                    attachedParty.setAlias(results.getString(12));
+                    attachedParty.setPartylist(results.getBoolean(13));
+                    item.setAttachedParty(attachedParty);
                 }
+
                 itemList.add(item);
             }
         } finally {

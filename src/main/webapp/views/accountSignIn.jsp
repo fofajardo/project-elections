@@ -129,13 +129,13 @@
                             The QR code you've scanned is invalid.
                         </div>
                     </c:if>
-                    <a href="#" class="w-100 btn btn-lg btn-primary mb-2" onclick="document.getElementById('qr-selector').click();">
+                    <a href="#" class="w-100 btn btn-lg btn-gold mb-2 p-4" onclick="document.getElementById('qr-selector').click();">
                         <i class="bi bi-qr-code-scan"></i>
                         Scan QR Code
                     </a>
-                    <a href="<c:url value='/accounts/sign-in'/>" class="w-100 btn btn-lg btn-gold">
-                        <i class="bi bi-envelope"></i>
-                        <span class="ms-1">Sign In with Email instead</span>
+                    <a href="<c:url value='/accounts/sign-in'/>" class="w-100 btn btn-outline-primary">
+                        <i class="bi bi-envelope me-1"></i>
+                        Sign In with Email instead
                     </a>
     </c:when>
     <c:otherwise>
@@ -158,10 +158,13 @@
                             The credentials you've entered does not match any account.
                         </div>
                     </c:if>
-                    <button class="w-100 btn btn-lg btn-primary mb-2" type="submit">Sign In</button>
+                    <button class="w-100 btn btn-lg btn-primary mb-2" type="submit">
+                        <i class="bi bi-arrow-return-left me-1"></i>
+                        Sign In
+                    </button>
                     <a href="<c:url value='/accounts/sign-in-qr'/>" class="w-100 btn btn-lg btn-gold">
-                        <i class="bi bi-qr-code-scan"></i>
-                        <span class="ms-1">Sign In with QR</span>
+                        <i class="bi bi-qr-code me-1"></i>
+                        Sign In with QR
                     </a>
     </c:otherwise>
 </c:choose>

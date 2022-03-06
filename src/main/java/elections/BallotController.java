@@ -65,13 +65,14 @@ public class BallotController extends HttpServlet {
 	}
 	
 	private String goAnswer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    if (AccountController.isBallotSubmitted(request)) {
+	    Account account = AccountController.getCurrentAccount(request);
+
+	    if (isBallotSubmitted(account)) {
 	        response.sendRedirect(request.getContextPath() + statusUrl);
 	        return "";
 	    }
 
 	    try {
-            Account account = AccountController.getCurrentAccount(request);
             Location currentLocation = LocationDB.readId(account.getLocationId());
             request.setAttribute("currentLocation", currentLocation);
 
@@ -103,15 +104,15 @@ public class BallotController extends HttpServlet {
 	private static final String parameterPrefix = "vote-position-";
 	
 	private String goSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!AccountController.isBallotSubmitted(request)) {
+	    Account account = AccountController.getCurrentAccount(request);
+
+	    if (!isBallotSubmitted(account)) {
             ArrayList<Position> positions = null;
             try {
                 positions = PositionDB.read();
             } catch (SQLException e) {
                 positions = new ArrayList<Position>();
             }
-    
-            Account account = AccountController.getCurrentAccount(request);
     
             Map<String, String[]> parameters = request.getParameterMap();
     	    Iterator<String> iterator = parameters.keySet().iterator();
@@ -186,10 +187,10 @@ public class BallotController extends HttpServlet {
 	}
 	
     private String goStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (AccountController.isBallotSubmitted(request)) {
+        Account account = AccountController.getCurrentAccount(request);
+        if (isBallotSubmitted(account)) {
             request.setAttribute("ballotSubmitted", true);
         } else {
-            Account account = AccountController.getCurrentAccount(request);
             String locationName = "";
             try {
                 Location location = LocationDB.readId(account.getLocationId());
@@ -200,5 +201,13 @@ public class BallotController extends HttpServlet {
             request.setAttribute("locationName", locationName);
         }
         return "/views/ballotStatus.jsp";
+    }
+
+    private boolean isBallotSubmitted(Account account) {
+        if (account != null) {
+            Date ballotSubmissionDate = account.getVoteRecorded();
+            return (ballotSubmissionDate != null);
+        }
+        return false;
     }
 }

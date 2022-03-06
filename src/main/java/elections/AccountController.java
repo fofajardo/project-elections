@@ -155,13 +155,4 @@ public class AccountController extends HttpServlet {
         }
         return null;
     }
-
-    public static boolean isBallotSubmitted(HttpServletRequest request) {
-        Account account = getCurrentAccount(request);
-        if (account != null) {
-            Date ballotSubmissionDate = account.getVoteRecorded();
-            return (ballotSubmissionDate != null);
-        }
-        return false;
-    }
 }

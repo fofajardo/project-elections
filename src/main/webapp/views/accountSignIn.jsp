@@ -133,7 +133,7 @@
                         <i class="bi bi-qr-code-scan"></i>
                         Scan QR Code
                     </a>
-                    <a href="<c:url value='/accounts/sign-in'/>" class="w-100 btn btn-lg btn-outline-secondary">
+                    <a href="<c:url value='/accounts/sign-in'/>" class="w-100 btn btn-lg btn-gold">
                         <i class="bi bi-envelope"></i>
                         <span class="ms-1">Sign In with Email instead</span>
                     </a>
@@ -159,7 +159,7 @@
                         </div>
                     </c:if>
                     <button class="w-100 btn btn-lg btn-primary mb-2" type="submit">Sign In</button>
-                    <a href="<c:url value='/accounts/sign-in-qr'/>" class="w-100 btn btn-lg btn-outline-secondary">
+                    <a href="<c:url value='/accounts/sign-in-qr'/>" class="w-100 btn btn-lg btn-gold">
                         <i class="bi bi-qr-code-scan"></i>
                         <span class="ms-1">Sign In with QR</span>
                     </a>

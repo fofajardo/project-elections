@@ -104,7 +104,7 @@
                         aria-expanded="false"
                         aria-controls="collapse-${positionStatus.index}">
                     <span class="h6 text-dark m-0">
-                        <span class="badge bg-primary text-dark me-2"
+                        <span class="badge bg-primary me-2"
                               style="min-width: 80px;">
                               Vote for ${position.getVoteLimit()}
                         </span>
@@ -175,7 +175,7 @@
                         aria-expanded="false"
                         aria-controls="collapse-partylist">
                     <span class="h6 text-dark m-0">
-                        <span class="badge bg-primary text-dark me-2"
+                        <span class="badge bg-primary me-2"
                               style="min-width: 80px;">
                               Vote for 1
                         </span>

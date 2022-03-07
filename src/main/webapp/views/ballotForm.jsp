@@ -100,7 +100,7 @@
                             <c:out value="</div>" escapeXml="false"/>
                             <c:remove var="rowAdded"/>
                         </c:if>
-                        <c:out value="<div class='col-sm-3'>" escapeXml="false"/>
+                        <c:out value="<div class='col-lg-3'>" escapeXml="false"/>
                         <c:set var="rowAdded" value="${true}"/>
                     </c:if>
                     <label class="candidate-box" for="candidate-${candidate.getId()}">

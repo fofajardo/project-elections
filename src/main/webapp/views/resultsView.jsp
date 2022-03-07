@@ -11,17 +11,14 @@
 
 <div class="container">
     <div id="ballot-title" class="mt-3">
-        <span class="h3">
+        <div class="h3">
             Election Results
-        </span>
-        <br/>
-        <span class="badge bg-primary f-3">
+        </div>
+        <div class="h6">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</div>
+        <div class="h6">${locationName}</div>
+        <div class="badge bg-primary f-3">
         As of <fmt:formatDate type="both" dateStyle="long" timeStyle="long" value="${retrieval}" /> 
-        </span>
-        <br/>
-        <span class="h6">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</span>
-        <br/>
-        <span class="h6">${locationName}</span>
+        </div>
     </div>
     <div class="accordion shadow-sm my-3" id="accordionBallot">
     <!-- 1: Positions -->

@@ -61,12 +61,12 @@
                             <c:out value="</div>" escapeXml="false"/>
                             <c:remove var="rowAdded"/>
                         </c:if>
-                        <c:out value="<div class='col-sm-3'>" escapeXml="false"/>
+                        <c:out value="<div class='col-lg-3'>" escapeXml="false"/>
                         <c:set var="rowAdded" value="${true}"/>
                     </c:if>
                     <div class="candidate-box">
                         <c:if test="${!isReceipt}">
-                        <span class="badge rounded-circle bg-secondary">${candidateStatus.index + 1}</span>
+                        <span class="badge rounded-pill bg-secondary">${candidateStatus.index + 1}</span>
                         </c:if>
                         ${candidate.getLastName()}, ${candidate.getFirstName()}
                         <c:if test="${candidate.getMiddleName() != null}">
@@ -121,7 +121,7 @@
                             <c:out value="</div>" escapeXml="false"/>
                             <c:remove var="rowAdded"/>
                         </c:if>
-                        <c:out value="<div class='col-sm-3'>" escapeXml="false"/>
+                        <c:out value="<div class='col-lg-3'>" escapeXml="false"/>
                         <c:set var="rowAdded" value="${true}"/>
                     </c:if>
                     <div class="candidate-box">

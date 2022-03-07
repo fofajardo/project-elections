@@ -11,19 +11,18 @@ public class CandidateDB {
             Connection connection = ConnectionUtil.getConnection();
     
             String query = "INSERT INTO `candidates` ("
-                         + "`position_id`, `partylist_id`, `location_id`, "
+                         + "`position_id`, `partylist_id`, "
                          + "`first_name`, `middle_name`, "
                          + "`last_name`, `suffix`"
-                         + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+                         + ") VALUES (?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
     
             statement.setInt(1, candidate.getPositionId());
             statement.setInt(2, candidate.getPartyId());
-            statement.setInt(3, candidate.getLocationId());
-            statement.setString(4, candidate.getFirstName());
-            statement.setString(5, candidate.getMiddleName());
-            statement.setString(6, candidate.getLastName());
-            statement.setString(7, candidate.getSuffix());
+            statement.setString(3, candidate.getFirstName());
+            statement.setString(4, candidate.getMiddleName());
+            statement.setString(5, candidate.getLastName());
+            statement.setString(6, candidate.getSuffix());
 
             statement.executeUpdate();
         } finally {
@@ -39,16 +38,15 @@ public class CandidateDB {
         item.setId(results.getInt(1));
         item.setPositionId(results.getInt(2));
         item.setPartyId(results.getInt(3));
-        item.setLocationId(results.getInt(4));
-        item.setFirstName(results.getString(5));
-        Object middleName = results.getObject(6);
+        item.setFirstName(results.getString(4));
+        Object middleName = results.getObject(5);
         if (middleName == null) {
             item.setMiddleName("");
         } else {
             item.setMiddleName(String.valueOf(middleName));
         }
-        item.setLastName(results.getString(7));
-        Object suffix = results.getObject(8);
+        item.setLastName(results.getString(6));
+        Object suffix = results.getObject(7);
         if (suffix == null) {
             item.setSuffix("");
         } else {
@@ -99,14 +97,14 @@ public class CandidateDB {
             while (results.next()) {
                 Candidate item = createFromResultSet(results);
 
-                int partyId = results.getInt(9);
+                int partyId = results.getInt(8);
                 if (partyId > 0) {
                     Party attachedParty = new Party();
                     attachedParty.setId(partyId);
-                    attachedParty.setCustomOrder(results.getInt(10));
-                    attachedParty.setName(results.getString(11));
-                    attachedParty.setAlias(results.getString(12));
-                    attachedParty.setPartylist(results.getBoolean(13));
+                    attachedParty.setCustomOrder(results.getInt(9));
+                    attachedParty.setName(results.getString(10));
+                    attachedParty.setAlias(results.getString(11));
+                    attachedParty.setPartylist(results.getBoolean(12));
                     item.setAttachedParty(attachedParty);
                 }
 
@@ -149,14 +147,14 @@ public class CandidateDB {
             while (results.next()) {
                 Candidate item = createFromResultSet(results);
 
-                int partyId = results.getInt(9);
+                int partyId = results.getInt(8);
                 if (partyId > 0) {
                     Party attachedParty = new Party();
                     attachedParty.setId(partyId);
-                    attachedParty.setCustomOrder(results.getInt(10));
-                    attachedParty.setName(results.getString(11));
-                    attachedParty.setAlias(results.getString(12));
-                    attachedParty.setPartylist(results.getBoolean(13));
+                    attachedParty.setCustomOrder(results.getInt(9));
+                    attachedParty.setName(results.getString(10));
+                    attachedParty.setAlias(results.getString(11));
+                    attachedParty.setPartylist(results.getBoolean(12));
                     item.setAttachedParty(attachedParty);
                 }
 
@@ -180,7 +178,6 @@ public class CandidateDB {
             String query = "UPDATE `candidates` SET"
                          + "    `position_id`=?, "
                          + "    `partylist_id`=?, "
-                         + "    `location_id`=?,"
                          + "    `first_name`=?,"
                          + "    `middle_name`=?,"
                          + "    `last_name`=?,"
@@ -190,12 +187,11 @@ public class CandidateDB {
     
             statement.setInt(1, candidate.getPositionId());
             statement.setInt(2, candidate.getPartyId());
-            statement.setInt(3, candidate.getLocationId());
-            statement.setString(4, candidate.getFirstName());
-            statement.setString(5, candidate.getMiddleName());
-            statement.setString(6, candidate.getLastName());
-            statement.setString(7, candidate.getSuffix());
-            statement.setInt(8, candidate.getId());
+            statement.setString(3, candidate.getFirstName());
+            statement.setString(4, candidate.getMiddleName());
+            statement.setString(5, candidate.getLastName());
+            statement.setString(6, candidate.getSuffix());
+            statement.setInt(7, candidate.getId());
 
             statement.executeUpdate();
         } finally {

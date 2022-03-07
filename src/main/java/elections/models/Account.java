@@ -5,7 +5,6 @@ import java.util.UUID;
 
 public class Account {
     private int id;
-    private int locationId;
     private String uuid;
     
     private String firstName;
@@ -25,13 +24,6 @@ public class Account {
     }
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getLocationId() {
-        return locationId;
-    }
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
     }
 
     public String getFirstName() {

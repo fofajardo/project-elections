@@ -51,7 +51,6 @@
 <div class="container">
     <div id="ballot-title" class="my-3">
         <div class="h3">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</div>
-        <div class="h6">${currentLocation.getName()}</div>
     </div>
 
     <form id="ballot-form"

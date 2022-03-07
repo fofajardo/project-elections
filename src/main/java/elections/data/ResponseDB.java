@@ -85,21 +85,20 @@ public class ResponseDB {
                 attachedCandidate.setId(results.getInt(4));
                 attachedCandidate.setPositionId(results.getInt(5));
                 attachedCandidate.setPartyId(results.getInt(6));
-                attachedCandidate.setLocationId(results.getInt(7));
-                attachedCandidate.setFirstName(results.getString(8));
-                attachedCandidate.setMiddleName(results.getString(9));
-                attachedCandidate.setLastName(results.getString(10));
-                attachedCandidate.setSuffix(results.getString(11));
+                attachedCandidate.setFirstName(results.getString(7));
+                attachedCandidate.setMiddleName(results.getString(8));
+                attachedCandidate.setLastName(results.getString(9));
+                attachedCandidate.setSuffix(results.getString(10));
                 item.setAttachedCandidate(attachedCandidate);
 
-                int partyId = results.getInt(12);
+                int partyId = results.getInt(11);
                 if (partyId > 0) {
                     Party attachedParty = new Party();
                     attachedParty.setId(partyId);
-                    attachedParty.setCustomOrder(results.getInt(13));
-                    attachedParty.setName(results.getString(14));
-                    attachedParty.setAlias(results.getString(15));
-                    attachedParty.setPartylist(results.getBoolean(16));
+                    attachedParty.setCustomOrder(results.getInt(12));
+                    attachedParty.setName(results.getString(13));
+                    attachedParty.setAlias(results.getString(14));
+                    attachedParty.setPartylist(results.getBoolean(15));
                     attachedCandidate.setAttachedParty(attachedParty);
                 }
 

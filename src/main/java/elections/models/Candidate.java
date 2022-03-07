@@ -3,7 +3,6 @@ package elections.models;
 public class Candidate {
     private int id;
     private int positionId;
-    private int locationId;
     private int partyId;
     private String firstName;
     private String middleName;
@@ -25,13 +24,6 @@ public class Candidate {
     }
     public void setPositionId(int positionId) {
         this.positionId = positionId;
-    }
-
-    public int getLocationId() {
-        return locationId;
-    }
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
     }
 
     public int getPartyId() {

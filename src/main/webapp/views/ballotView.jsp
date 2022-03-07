@@ -22,7 +22,6 @@
     <div id="ballot-title" class="my-3">
         <div class="h1">${pageSubtitle}</div>
         <div class="h6">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</div>
-        <div class="h6">${locationName}</div>
         <c:if test="${isResults}">
         <div class="badge bg-primary f-3">
         As of <fmt:formatDate type="both" dateStyle="long" timeStyle="long" value="${retrieval}" /> 

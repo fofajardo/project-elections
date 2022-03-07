@@ -78,9 +78,6 @@ public class BallotController extends HttpServlet {
 	    }
 
 	    try {
-            Location currentLocation = LocationDB.readId(account.getLocationId());
-            request.setAttribute("currentLocation", currentLocation);
-
             ArrayList<Position> positions = PositionDB.read();
             request.setAttribute("positions",  positions);
 
@@ -196,15 +193,6 @@ public class BallotController extends HttpServlet {
         Account account = AccountController.getCurrentAccount(request);
         if (isBallotSubmitted(account)) {
             request.setAttribute("ballotSubmitted", true);
-        } else {
-            String locationName = "";
-            try {
-                Location location = LocationDB.readId(account.getLocationId());
-                locationName = location.getName();
-            } catch (SQLException e) {
-                locationName = "Invalid location";
-            }
-            request.setAttribute("locationName", locationName);
         }
         return "/views/ballotStatus.jsp";
     }
@@ -217,12 +205,7 @@ public class BallotController extends HttpServlet {
         request.setAttribute("isReceipt", true);
         Account account = AccountController.getCurrentAccount(request);
         if (isBallotSubmitted(account)) {
-            String locationName = "";
             try {
-                Location location = LocationDB.readId(account.getLocationId());
-                locationName = location.getName();
-                request.setAttribute("locationName", locationName);
-
                 ArrayList<Position> positions;
                 positions = PositionDB.read();
                 request.setAttribute("positions",  positions);

@@ -31,11 +31,6 @@
             </c:otherwise>
         </c:choose>
         </h1>
-        <c:if test="${!ballotSubmitted}">
-        <h5>
-            ${locationName}
-        </h5>
-        </c:if>
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4">
             <c:choose>

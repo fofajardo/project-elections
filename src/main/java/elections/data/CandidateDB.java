@@ -70,9 +70,11 @@ public class CandidateDB {
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT * FROM `candidates` LEFT JOIN `parties` "
-                         + "ON `candidates`.partylist_id = `parties`.id "
-                         + "WHERE `position_id`=? ORDER BY `last_name`";
+            String query = "SELECT * FROM `candidates`"
+                         + "    LEFT JOIN `parties` "
+                         + "        ON `candidates`.partylist_id = `parties`.id "
+                         + "    WHERE `position_id`=?"
+                         + "    ORDER BY `last_name`";
             statement = connection.prepareStatement(query);
             statement.setInt(1, positionId);
             ResultSet results = statement.executeQuery();

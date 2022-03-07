@@ -82,7 +82,7 @@
             </a>
         </li>
         <li>
-            <a href="<c:url value='/election-results'/>" class="nav-link link-dark ${navActiveResults}">
+            <a href="<c:url value='/results/view'/>" class="nav-link link-dark ${navActiveResults}">
                 <i class="bi bi-clipboard-fill me-2"></i>
                 Election Results
             </a>

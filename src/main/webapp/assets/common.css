@@ -19,10 +19,17 @@
   height: 65px;
   display: block;
   font-weight: 500;
-  -webkit-user-select: none;  
-  -moz-user-select: none;    
-  -ms-user-select: none;      
+  -webkit-user-select: none;
+  -moz-user-select: none; 
+  -ms-user-select: none;
   user-select: none;
+}
+
+.candidate-box.min {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 45px;
 }
 
 .candidate-box:hover {

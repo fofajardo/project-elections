@@ -276,8 +276,7 @@ public class BallotController extends HttpServlet {
         request.setAttribute("navActiveCandidates", "active");
 
         try {
-            ArrayList<Position> positions;
-            positions = PositionDB.read();
+            ArrayList<Position> positions = PositionDB.read();
             request.setAttribute("positions",  positions);
 
             HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();

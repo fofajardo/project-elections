@@ -153,18 +153,24 @@ public class ResponseDB {
         return itemList;
     }
 
-    public static int getCandidateVoteCount(int candidateId) throws SQLException {
+    public static HashMap<Integer, Integer> getCandidateVotes() throws SQLException {
         PreparedStatement statement = null;
-        int voteCount = -1;
+        HashMap<Integer, Integer> voteCount = new HashMap<>();
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT COUNT(*) AS rowCount FROM `responses` WHERE `candidate_id` = ?";
+            String query = "SELECT `candidate_id`, `position_id`, COUNT(`voter_id`)"
+                         + "    FROM `responses`"
+                         + "    INNER JOIN `candidates`"
+                         + "        ON `responses`.candidate_id = `candidates`.id"
+                         + "    WHERE `candidate_id` IS NOT NULL"
+                         + "    GROUP BY `candidate_id`";
             statement = connection.prepareStatement(query);
-            statement.setInt(1, candidateId);
             ResultSet results = statement.executeQuery();
 
-            voteCount = results.getInt(1);
+            while (results.next()) {
+                voteCount.put(results.getInt(1), results.getInt(3));
+            }
         } finally {
             if (statement != null) {
                 statement.close();
@@ -173,18 +179,24 @@ public class ResponseDB {
         return voteCount;
     }
 
-    public static int getPartylistVoteCount(int partylistId) throws SQLException {
+    public static HashMap<Integer, Integer> getPartylistVotes() throws SQLException {
         PreparedStatement statement = null;
-        int voteCount = -1;
+        HashMap<Integer, Integer> voteCount = new HashMap<>();
         try {
             Connection connection = ConnectionUtil.getConnection();
 
-            String query = "SELECT COUNT(*) AS rowCount FROM `responses` WHERE `partylist_id` = ?";
+            String query = "SELECT `partylist_id`, COUNT(`voter_id`)"
+                         + "    FROM `responses`"
+                         + "    INNER JOIN `parties`"
+                         + "        ON `responses`.partylist_id = `parties`.id"
+                         + "    WHERE `partylist_id` IS NOT NULL"
+                         + "    GROUP BY `partylist_id`";
             statement = connection.prepareStatement(query);
-            statement.setInt(1, partylistId);
             ResultSet results = statement.executeQuery();
 
-            voteCount = results.getInt(1);
+            while (results.next()) {
+                voteCount.put(results.getInt(1), results.getInt(2));
+            }
         } finally {
             if (statement != null) {
                 statement.close();

@@ -58,7 +58,7 @@
                 Election results are updated real-time, along with raw data and graphic visualizations.
             </p>
             <div class="d-flex justify-content-start">
-                <a href="<c:url value='/election-results'/>" class="btn btn-primary btn-lg px-4">
+                <a href="<c:url value='/results/view'/>" class="btn btn-primary btn-lg px-4">
                     View Election Results
                 </a>
             </div>

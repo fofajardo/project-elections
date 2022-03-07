@@ -1,0 +1,186 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
+<div class="accordion shadow-sm" id="accordionBallot">
+<%-- 1: Positions --%>
+<c:forEach items="${positions}" var="position" varStatus="positionStatus">
+    <div class="accordion-item">
+        <div class="accordion-header"
+             id="heading-${positionStatus.index}">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse-${positionStatus.index}"
+                    aria-expanded="false"
+                    aria-controls="collapse-${positionStatus.index}">
+                <span class="h6 text-dark m-0">
+                    <span class="badge bg-primary me-2"
+                          style="min-width: 80px;">
+                          Vote for ${position.getVoteLimit()}
+                    </span>
+                    ${position.getName()}
+                </span>
+            </button>
+        </div>
+        <div class="accordion-collapse collapse vote-container"
+             id="collapse-${positionStatus.index}"
+             data-bs-parent="#accordionBallot"
+             data-vote-limit="${position.getVoteLimit()}"
+             data-vote-position="${position.getId()}"
+             aria-labelledby="heading-${positionStatus.index}">
+            <div class="accordion-body">
+            <c:if test="${position.getVoteLimit() > 1}">
+                <c:set var="candidatePlural" value="s"/>
+            </c:if>
+            <div id="alert-${position.getId()}" class="alert alert-danger alert-validation invisible" role="alert">
+                You must vote for <span class="fw-bold">only ${position.getVoteLimit()} candidate<c:out value="${candidatePlural}"/></span> in this position.
+            </div>
+            <div class="row">
+            <c:forEach items="${candidates.get(position.getId())}" var="candidate" varStatus="candidateStatus">
+                <c:if test="${!isResults && candidateStatus.index % maxRows[positionStatus.index] == 0}">
+                    <c:if test="${rowAdded}">
+                        <c:out value="</div>" escapeXml="false"/>
+                        <c:remove var="rowAdded"/>
+                    </c:if>
+                    <c:out value="<div class='col-lg-3'>" escapeXml="false"/>
+                    <c:set var="rowAdded" value="${true}"/>
+                </c:if>
+                <div class="candidate-box ${boxStyle}">
+                    <c:if test="${isForm}">
+                    <label for="candidate-${candidate.getId()}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="vote-position-${position.getId()}"
+                                   id="candidate-${candidate.getId()}" value="${candidate.getId()}">
+                            <label class="form-check-label" for="candidate-${candidate.getId()}">
+                    </c:if>
+                    <c:if test="${!hideCandidateNumber}">
+                                <span class="badge rounded-pill bg-secondary">${candidateStatus.index + 1}</span>
+                    </c:if> 
+                                ${candidate.getLastName()}, ${candidate.getFirstName()}
+                                <c:if test="${candidate.getMiddleName() != null}">
+                                    ${candidate.getMiddleName()}
+                                </c:if>
+                                <c:if test="${candidate.getSuffix() != null}">
+                                    ${candidate.getSuffix()}
+                                </c:if>
+                                <c:if test="${candidate.getAttachedParty() != null}">
+                                    (${candidate.getAttachedParty().getAlias()})
+                                </c:if>
+                    <c:if test="${isResults}">
+                        <span class="fw-bold fs-3">
+                        <c:choose>
+                            <c:when test="${candidateVotes.get(candidate.getId()) != null}">
+                                <fmt:formatNumber type="number" maxFractionDigits="0" value="${candidateVotes.get(candidate.getId())}" />
+                            </c:when>
+                            <c:otherwise>
+                                0
+                            </c:otherwise>
+                        </c:choose>
+                        </span>
+                    </c:if>
+                    <c:if test="${isForm}">
+                            </label>
+                        </div>
+                    </label>
+                    </c:if>
+                </div>
+                <c:if test="${!isResults && candidateStatus.last && rowAdded}">
+                    <c:out value="</div>" escapeXml="false"/>
+                    <c:remove var="rowAdded"/>
+                </c:if>
+            </c:forEach>
+            </div>
+            </div>
+        </div>
+    </div>
+</c:forEach>
+<%-- 2: Partylists --%>
+    <div class="accordion-item">
+        <div class="accordion-header"
+             id="heading-partylist">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse-partylist"
+                    aria-expanded="false"
+                    aria-controls="collapse-partylist">
+                <span class="h6 text-dark m-0">
+                    <span class="badge bg-primary me-2"
+                          style="min-width: 80px;">
+                          Vote for 1
+                    </span>
+                    Party List
+                </span>
+            </button>
+        </div>
+        <div class="accordion-collapse collapse vote-container"
+             id="collapse-partylist"
+             data-bs-parent="#accordionBallot"
+             data-vote-limit="1"
+             data-vote-position="partylist"
+             aria-labelledby="heading-partylist">
+            <div class="accordion-body">
+            <div id="alert-partylist" class="alert alert-danger alert-validation invisible" role="alert">
+                You must vote for <span class="fw-bold">only 1 party list</span>.
+            </div>
+            <div class="row">
+            <c:forEach items="${partylists}" var="partylist" varStatus="partylistStatus">
+                <c:if test="${!isResults && partylistStatus.index % partylistMaxRows == 0}">
+                    <c:if test="${rowAdded}">
+                        <c:out value="</div>" escapeXml="false"/>
+                        <c:remove var="rowAdded"/>
+                    </c:if>
+                    <c:out value="<div class='col-sm-3'>" escapeXml="false"/>
+                    <c:set var="rowAdded" value="${true}"/>
+                </c:if>
+                <div class="candidate-box ${boxStyle}">
+                    <c:if test="${isForm}">
+                    <label for="partylist-${partylist.getId()}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="vote-position-partylist"
+                                   id="partylist-${partylist.getId()}" value="${partylist.getId()}">
+                            <label class="form-check-label" for="partylist-${partylist.getId()}">
+                    </c:if>
+                            <div>
+                                <span class="badge rounded-pill bg-secondary">
+                                <c:choose>
+                                    <c:when test="${partylist.getCustomOrder() < 10}">
+                                        0${partylist.getCustomOrder()}
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${partylist.getCustomOrder()}
+                                    </c:otherwise>
+                                </c:choose>
+                                </span>
+                                ${partylist.getName()}
+                            </div>
+                    <c:if test="${isResults}">
+                        <span class="fw-bold fs-3">
+                        <c:choose>
+                            <c:when test="${partylistVotes.get(partylist.getId()) != null}">
+                                <fmt:formatNumber type="number"
+                                                  maxFractionDigits="0"
+                                                  value="${partylistVotes.get(partylist.getId())}" />
+                            </c:when>
+                            <c:otherwise>
+                                0
+                            </c:otherwise>
+                        </c:choose>
+                        </span>
+                    </c:if>
+                    <c:if test="${isForm}">
+                            </label>
+                        </div>
+                    </label>
+                    </c:if>
+                </div>
+                <c:if test="${!isResults && partylistStatus.last && rowAdded}">
+                    <c:out value="</div>" escapeXml="false"/>
+                    <c:remove var="rowAdded"/>
+                </c:if>
+            </c:forEach>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

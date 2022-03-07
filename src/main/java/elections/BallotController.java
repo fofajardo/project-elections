@@ -84,12 +84,12 @@ public class BallotController extends HttpServlet {
             ArrayList<Position> positions = PositionDB.read();
             request.setAttribute("positions",  positions);
 
-            ArrayList<ArrayList<Candidate>> candidates = new ArrayList<ArrayList<Candidate>>();
+            HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
             int[] maxRows = new int[positions.size()];
             for (int i = 0; i < positions.size(); i++) {
-                Position item = positions.get(i);
-                ArrayList<Candidate> data = CandidateDB.readFromPosition(item.getId());
-                candidates.add(data);
+                int positionId = positions.get(i).getId();
+                ArrayList<Candidate> data = CandidateDB.readFromPosition(positionId);
+                candidates.put(positionId, data);
                 maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
             }
             request.setAttribute("candidates", candidates);
@@ -287,7 +287,6 @@ public class BallotController extends HttpServlet {
                 candidates.put(positionId, data);
                 maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
             }
-
             request.setAttribute("candidates", candidates);
             request.setAttribute("maxRows", maxRows);
 

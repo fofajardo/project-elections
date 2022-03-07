@@ -74,8 +74,9 @@ public class ResultsController extends HttpServlet {
         } catch (Exception e) {
             return null; 
         }
-        
-        return "/views/resultsView.jsp";
+
+        request.setAttribute("isResults", true);
+        return "/views/ballotView.jsp";
     }
 
 }

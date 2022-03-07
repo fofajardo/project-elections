@@ -16,7 +16,7 @@
     <c:set var="boxStyle" value="min"/>
 </c:if>
 
-<%@ include file="_header.jsp" %>
+<%@ include file="/WEB-INF/jspf/header.jspf" %>
 
 <div class="container">
     <div id="ballot-title" class="my-3">
@@ -33,4 +33,4 @@
     <%@ include file="/WEB-INF/jspf/choices.jspf" %>
 </div>
 
-<%@ include file="_footer.jsp" %>
+<%@ include file="/WEB-INF/jspf/footer.jspf" %>

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageSubtitle" value="Home"/>
 
-<%@ include file="_header.jsp" %>
+<%@ include file="/WEB-INF/jspf/header.jspf" %>
 
 <div class="bg-primary text-center text-light px-4">
     <div class="d-flex align-items-center justify-content-center flex-column vh-100">
@@ -78,4 +78,4 @@
     </div>
 </footer>
 
-<%@ include file="_footer.jsp" %>
+<%@ include file="/WEB-INF/jspf/footer.jspf" %>

@@ -6,7 +6,7 @@
 <c:set var="pageSubtitle" value="Sign In"/>
 <c:set var="hideHeader" value="${true}"/>
 
-<%@ include file="_header.jsp" %>
+<%@ include file="/WEB-INF/jspf/header.jspf" %>
 
 <c:if test="${useQr}">
 <div id="load-overlay">
@@ -126,4 +126,4 @@
     </div>
 </div>
 
-<%@ include file="_footer.jsp" %>
+<%@ include file="/WEB-INF/jspf/footer.jspf" %>

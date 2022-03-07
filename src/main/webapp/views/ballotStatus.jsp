@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageSubtitle" value="Your Ballot Status"/>
 
-<%@ include file="_header.jsp" %>
+<%@ include file="/WEB-INF/jspf/header.jspf" %>
 
 <div class="container">
     <div class="my-5 text-center">
@@ -62,4 +62,4 @@
     </div>
 </div>
 
-<%@ include file="_footer.jsp" %>
+<%@ include file="/WEB-INF/jspf/footer.jspf" %>

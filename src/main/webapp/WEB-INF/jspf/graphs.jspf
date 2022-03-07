@@ -14,6 +14,7 @@ Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
          return value;
      },
      color: "#000000",
+     textAlign: "center",
      font: {
     	 weight: "bold",
      },
@@ -59,7 +60,12 @@ async function loadResults() {
             },
             options: {
                 scales: {
-                    yAxes: [{
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                	yAxes: [{
                         ticks: {
                             beginAtZero: true
                         }

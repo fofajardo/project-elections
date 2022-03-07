@@ -110,7 +110,7 @@ public class CandidateDB {
     }
 
     public static ArrayList<Candidate> readFromPositionWithVotes(
-            int positionId) throws SQLException {
+            int positionId, int limit) throws SQLException {
         ArrayList<Candidate> itemList = new ArrayList<Candidate>();
         PreparedStatement statement = null;
         try {
@@ -128,6 +128,9 @@ public class CandidateDB {
                          + "        ON `candidates`.id = candidateVotes.candidate_id"
                          + "    WHERE `position_id`=?"
                          + "    ORDER BY votes DESC";
+            if (limit > 0) {
+                query += " LIMIT " + limit;
+            }
             statement = connection.prepareStatement(query);
             statement.setInt(1, positionId);
             ResultSet results = statement.executeQuery();

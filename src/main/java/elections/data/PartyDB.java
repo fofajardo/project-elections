@@ -105,7 +105,7 @@ public class PartyDB {
         return itemList;
     }
 
-    public static ArrayList<Party> readPartylistWithVotes()
+    public static ArrayList<Party> readPartylistWithVotes(int limit)
            throws SQLException {
         ArrayList<Party> itemList = new ArrayList<Party>();
         Statement statement = null;
@@ -122,6 +122,9 @@ public class PartyDB {
                          + "        ON `parties`.id = partylistVotes.partylist_id"
                          + "    WHERE `is_partylist`=1"
                          + "    ORDER BY votes DESC";
+            if (limit > 0) {
+                query += " LIMIT " + limit;
+            }
             statement = connection.createStatement();
             ResultSet results = statement.executeQuery(query);
 
@@ -137,7 +140,7 @@ public class PartyDB {
         }
         return itemList;
     }
-    
+
     public static void update(Party party) throws SQLException {
         PreparedStatement statement = null;
         try {

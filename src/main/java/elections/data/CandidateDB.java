@@ -41,9 +41,20 @@ public class CandidateDB {
         item.setPartyId(results.getInt(3));
         item.setLocationId(results.getInt(4));
         item.setFirstName(results.getString(5));
-        item.setMiddleName(results.getString(6));
+        Object middleName = results.getObject(6);
+        if (middleName == null) {
+            item.setMiddleName("");
+        } else {
+            item.setMiddleName(String.valueOf(middleName));
+        }
         item.setLastName(results.getString(7));
-        item.setSuffix(results.getString(8));
+        Object suffix = results.getObject(8);
+        if (suffix == null) {
+            item.setSuffix("");
+        } else {
+            item.setSuffix(String.valueOf(suffix));
+        }
+
         return item;
     }
     
@@ -160,7 +171,7 @@ public class CandidateDB {
         }
         return itemList;
     }
-
+    
     public static void update(Candidate candidate) throws SQLException {
         PreparedStatement statement = null;
         try {

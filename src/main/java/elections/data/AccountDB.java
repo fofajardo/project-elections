@@ -65,9 +65,19 @@ public class AccountDB {
                 item.setUuid(results.getString(2));
                 item.setLocationId(results.getInt(3));
                 item.setFirstName(results.getString(4));
-                item.setMiddleName(results.getString(5));
+                Object middleName = results.getObject(5);
+                if (middleName == null) {
+                    item.setMiddleName("");
+                } else {
+                    item.setMiddleName(String.valueOf(middleName));
+                }
                 item.setLastName(results.getString(6));
-                item.setSuffix(results.getString(7));
+                Object suffix = results.getObject(7);
+                if (suffix == null) {
+                    item.setSuffix("");
+                } else {
+                    item.setSuffix(String.valueOf(suffix));
+                }
                 item.setUsername(results.getString(8));
                 item.setEmail(results.getString(9));
                 item.setPassword(results.getString(10));

@@ -1,0 +1,110 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/1.0.0/chartjs-plugin-datalabels.min.js"></script>
+
+<script>
+Chart.plugins.register(ChartDataLabels);
+
+Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
+     formatter: function (value, context) {
+         if (value <= 0) {
+             return "";
+         }
+         return value;
+     },
+     color: "#000000",
+     font: {
+    	 weight: "bold",
+     },
+});
+
+Chart.defaults.global.legend.display = false;
+
+Chart.helpers.merge(Chart.defaults.global.elements.rectangle, {
+    backgroundColor: [
+        "#ffd810",
+        "#ffdd29",
+        "#ffe23a",
+        "#ffe748",
+        "#ffec54",
+        "#fff15f",
+        "#fff56a",
+        "#fffa75",
+        "#ffff7f",
+        "#f9f979",
+        "#f3f374",
+        "#edee6e"
+    ],
+    borderWidth: 1,
+});
+
+async function loadResults() {
+    var response = await fetch("<c:url value="/results/get"/>");
+    var resultsJson = await response.json();
+    var resultsArr = Object.values(resultsJson);
+
+    for (let i = 0; i < resultsArr.length; i++) {
+    	let result = resultsArr[i];
+        let target = document.getElementById("resultsChart-" + result.id);
+
+        let chart = new Chart(target, {
+            type: "horizontalBar",
+            data: {
+                labels: result.labels,
+                datasets: [{
+                    label: "Number of Votes",
+                    data: result.data,
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+}
+
+loadResults();
+</script>
+
+<div class="mb-3">
+    <div class="row">
+        <div class="col-6">
+            <h3 class="mb-3">Leading Candidates</h3>
+        </div>
+        <div class="col-6 text-end">
+            <button class="btn btn-primary mb-3 mr-1" data-bs-target="#graphCarousel" data-bs-slide="prev">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            <button class="btn btn-primary mb-3 " data-bs-target="#graphCarousel" data-bs-slide="next">
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-8 mx-auto shadow-sm">
+        <div id="graphCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <c:forEach items="${positions}" var="position" varStatus="positionStatus">
+                <c:if test="${positionStatus.first}">
+                    <c:set var="carouselActive" value="active"/>
+                </c:if>
+                <div class="carousel-item ${carouselActive}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">${position.getName()}</h4>
+                            <canvas id="resultsChart-${position.getId()}"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <c:remove var="carouselActive"/>
+                </c:forEach>
+            </div>
+        </div>
+    </div>
+</div>

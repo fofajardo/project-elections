@@ -20,7 +20,7 @@
 
 <div class="container">
     <div id="ballot-title" class="my-3">
-        <div class="h3">${pageSubtitle}</div>
+        <div class="h1">${pageSubtitle}</div>
         <div class="h6">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</div>
         <div class="h6">${locationName}</div>
         <c:if test="${isResults}">
@@ -30,6 +30,10 @@
         </c:if>
     </div>
 
+    <c:if test="${isResults}">
+        <%@ include file="/WEB-INF/jspf/graphs.jspf" %>
+        <h3 class="my-3">Tally</h3>
+    </c:if>
     <%@ include file="/WEB-INF/jspf/choices.jspf" %>
 </div>
 

@@ -183,7 +183,7 @@ public class AccountDB {
                          + "    `email`=?,"
                          + "    `password`=?,"
                          + "    `dt_last_signin`=?,"
-                         + "    `dt_vote_recorded`=?"
+                         + "    `dt_vote_recorded`=?,"
                          + "    `role_id`=?"
                          + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);

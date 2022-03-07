@@ -28,6 +28,17 @@ public class PartyDB {
         }
     }
 
+    private static Party createFromResultSet(ResultSet results)
+            throws SQLException {
+        Party item = new Party();
+        item.setId(results.getInt(1));
+        item.setCustomOrder(results.getInt(2));
+        item.setName(results.getString(3));
+        item.setAlias(results.getString(4));
+        item.setPartylist(results.getBoolean(5));
+        return item;
+    }
+
     public static ArrayList<Party> read() throws SQLException {
         ArrayList<Party> itemList = new ArrayList<Party>();
         Statement statement = null;
@@ -39,12 +50,7 @@ public class PartyDB {
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                Party item = new Party();
-                item.setId(results.getInt(1));
-                item.setCustomOrder(results.getInt(2));
-                item.setName(results.getString(3));
-                item.setAlias(results.getString(4));
-                item.setPartylist(results.getBoolean(5));
+                Party item = createFromResultSet(results);
                 itemList.add(item);
             }
         } finally {
@@ -67,12 +73,7 @@ public class PartyDB {
             ResultSet results = statement.executeQuery();
 
             while (results.next()) {
-                item = new Party();
-                item.setId(results.getInt(1));
-                item.setCustomOrder(results.getInt(2));
-                item.setName(results.getString(3));
-                item.setAlias(results.getString(4));
-                item.setPartylist(results.getBoolean(5));
+                item = createFromResultSet(results);
             }
         } finally {
             if (statement != null) {
@@ -93,12 +94,7 @@ public class PartyDB {
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                Party item = new Party();
-                item.setId(results.getInt(1));
-                item.setCustomOrder(results.getInt(2));
-                item.setName(results.getString(3));
-                item.setAlias(results.getString(4));
-                item.setPartylist(results.getBoolean(5));
+                Party item = createFromResultSet(results);
                 itemList.add(item);
             }
         } finally {
@@ -109,6 +105,39 @@ public class PartyDB {
         return itemList;
     }
 
+    public static ArrayList<Party> readPartylistWithVotes()
+           throws SQLException {
+        ArrayList<Party> itemList = new ArrayList<Party>();
+        Statement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT * FROM `parties`"
+                         + "    LEFT JOIN ("
+                         + "        SELECT `partylist_id`, COUNT(`voter_id`) AS `votes`"
+                         + "        FROM `responses`"
+                         + "        WHERE `partylist_id` IS NOT NULL"
+                         + "        GROUP BY `partylist_id`"
+                         + "    ) partylistVotes"
+                         + "        ON `parties`.id = partylistVotes.partylist_id"
+                         + "    WHERE `is_partylist`=1"
+                         + "    ORDER BY votes DESC";
+            statement = connection.createStatement();
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                Party item = createFromResultSet(results);
+                item.setVotes(results.getInt("votes"));
+                itemList.add(item);
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return itemList;
+    }
+    
     public static void update(Party party) throws SQLException {
         PreparedStatement statement = null;
         try {

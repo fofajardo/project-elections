@@ -153,58 +153,6 @@ public class ResponseDB {
         return itemList;
     }
 
-    public static HashMap<Integer, Integer> getCandidateVotes() throws SQLException {
-        PreparedStatement statement = null;
-        HashMap<Integer, Integer> voteCount = new HashMap<>();
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT `candidate_id`, `position_id`, COUNT(`voter_id`)"
-                         + "    FROM `responses`"
-                         + "    INNER JOIN `candidates`"
-                         + "        ON `responses`.candidate_id = `candidates`.id"
-                         + "    WHERE `candidate_id` IS NOT NULL"
-                         + "    GROUP BY `candidate_id`";
-            statement = connection.prepareStatement(query);
-            ResultSet results = statement.executeQuery();
-
-            while (results.next()) {
-                voteCount.put(results.getInt(1), results.getInt(3));
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-        return voteCount;
-    }
-
-    public static HashMap<Integer, Integer> getPartylistVotes() throws SQLException {
-        PreparedStatement statement = null;
-        HashMap<Integer, Integer> voteCount = new HashMap<>();
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT `partylist_id`, COUNT(`voter_id`)"
-                         + "    FROM `responses`"
-                         + "    INNER JOIN `parties`"
-                         + "        ON `responses`.partylist_id = `parties`.id"
-                         + "    WHERE `partylist_id` IS NOT NULL"
-                         + "    GROUP BY `partylist_id`";
-            statement = connection.prepareStatement(query);
-            ResultSet results = statement.executeQuery();
-
-            while (results.next()) {
-                voteCount.put(results.getInt(1), results.getInt(2));
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-        return voteCount;
-    }
-
     public static void update(Response voteEntry) throws SQLException {
         // Vote entries cannot be modified or updated
         return;

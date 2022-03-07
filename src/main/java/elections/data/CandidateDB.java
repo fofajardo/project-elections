@@ -33,6 +33,20 @@ public class CandidateDB {
         }
     }
 
+    private static Candidate createFromResultSet(ResultSet results)
+            throws SQLException {
+        Candidate item = new Candidate();
+        item.setId(results.getInt(1));
+        item.setPositionId(results.getInt(2));
+        item.setPartyId(results.getInt(3));
+        item.setLocationId(results.getInt(4));
+        item.setFirstName(results.getString(5));
+        item.setMiddleName(results.getString(6));
+        item.setLastName(results.getString(7));
+        item.setSuffix(results.getString(8));
+        return item;
+    }
+    
     public static ArrayList<Candidate> read() throws SQLException {
         ArrayList<Candidate> itemList = new ArrayList<Candidate>();
         Statement statement = null;
@@ -44,15 +58,7 @@ public class CandidateDB {
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                Candidate item = new Candidate();
-                item.setId(results.getInt(1));
-                item.setPositionId(results.getInt(2));
-                item.setPartyId(results.getInt(3));
-                item.setLocationId(results.getInt(4));
-                item.setFirstName(results.getString(5));
-                item.setMiddleName(results.getString(6));
-                item.setLastName(results.getString(7));
-                item.setSuffix(results.getString(8));
+                Candidate item = createFromResultSet(results);
                 itemList.add(item);
             }
         } finally {
@@ -80,15 +86,7 @@ public class CandidateDB {
             ResultSet results = statement.executeQuery();
 
             while (results.next()) {
-                Candidate item = new Candidate();
-                item.setId(results.getInt(1));
-                item.setPositionId(results.getInt(2));
-                item.setPartyId(results.getInt(3));
-                item.setLocationId(results.getInt(4));
-                item.setFirstName(results.getString(5));
-                item.setMiddleName(results.getString(6));
-                item.setLastName(results.getString(7));
-                item.setSuffix(results.getString(8));
+                Candidate item = createFromResultSet(results);
 
                 int partyId = results.getInt(9);
                 if (partyId > 0) {
@@ -101,6 +99,55 @@ public class CandidateDB {
                     item.setAttachedParty(attachedParty);
                 }
 
+                itemList.add(item);
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return itemList;
+    }
+
+    public static ArrayList<Candidate> readFromPositionWithVotes(
+            int positionId) throws SQLException {
+        ArrayList<Candidate> itemList = new ArrayList<Candidate>();
+        PreparedStatement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "SELECT * FROM `candidates`"
+                         + "    LEFT JOIN `parties`"
+                         + "        ON `candidates`.partylist_id = `parties`.id"
+                         + "    LEFT JOIN ("
+                         + "        SELECT `candidate_id`, COUNT(`voter_id`) AS `votes`"
+                         + "        FROM `responses`"
+                         + "        WHERE `candidate_id` IS NOT NULL"
+                         + "        GROUP BY `candidate_id`"
+                         + "    ) candidateVotes"
+                         + "        ON `candidates`.id = candidateVotes.candidate_id"
+                         + "    WHERE `position_id`=?"
+                         + "    ORDER BY votes DESC";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, positionId);
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+                Candidate item = createFromResultSet(results);
+
+                int partyId = results.getInt(9);
+                if (partyId > 0) {
+                    Party attachedParty = new Party();
+                    attachedParty.setId(partyId);
+                    attachedParty.setCustomOrder(results.getInt(10));
+                    attachedParty.setName(results.getString(11));
+                    attachedParty.setAlias(results.getString(12));
+                    attachedParty.setPartylist(results.getBoolean(13));
+                    item.setAttachedParty(attachedParty);
+                }
+
+                item.setVotes(results.getInt("votes"));
+                
                 itemList.add(item);
             }
         } finally {

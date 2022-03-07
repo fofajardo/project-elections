@@ -17,8 +17,8 @@ public class AccountDB {
                          + "`uuid`, `first_name`, "
                          + "`middle_name`, `last_name`, `suffix`, "
                          + "`username`, `email`, `password`, "
-                         + "`dt_last_signin`, `dt_vote_recorded`"
-                         + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                         + "`dt_last_signin`, `dt_vote_recorded`, `role_id`"
+                         + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
 
             statement.setString(1, account.getUuid());
@@ -39,6 +39,7 @@ public class AccountDB {
             } else {
                 statement.setTimestamp(10, null);
             }
+            statement.setInt(11, account.getRoleId());
 
             statement.executeUpdate();
         } finally {
@@ -72,6 +73,7 @@ public class AccountDB {
         item.setPassword(results.getString(9));
         item.setLastSignIn(results.getTimestamp(10));
         item.setVoteRecorded(results.getTimestamp(11));
+        item.setRoleId(results.getInt(12));
         return item;
     }
 
@@ -182,6 +184,7 @@ public class AccountDB {
                          + "    `password`=?,"
                          + "    `dt_last_signin`=?,"
                          + "    `dt_vote_recorded`=?"
+                         + "    `role_id`=?"
                          + "    WHERE `id`=?";
             statement = connection.prepareStatement(query);
 
@@ -203,7 +206,8 @@ public class AccountDB {
             } else {
                 statement.setTimestamp(10, null);
             }
-            statement.setInt(11, account.getId());
+            statement.setInt(11, account.getRoleId());
+            statement.setInt(12, account.getId());
             statement.executeUpdate();
         } finally {
             if (statement != null) {

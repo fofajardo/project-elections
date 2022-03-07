@@ -18,6 +18,7 @@ public class Account {
 
     private Date lastSignIn;
     private Date voteRecorded;
+    private int roleId;
 
     public int getId() {
         return id;
@@ -97,5 +98,12 @@ public class Account {
     }
     public void setVoteRecorded(Date voteRecorded) {
         this.voteRecorded = voteRecorded;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 }

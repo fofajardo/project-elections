@@ -56,19 +56,14 @@ public class ResultsController extends HttpServlet {
             HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDB.readFromPosition(positionId);
+                ArrayList<Candidate> data = CandidateDB.readFromPositionWithVotes(positionId);
                 candidates.put(positionId, data);
             }
             request.setAttribute("candidates", candidates);
             
-            HashMap<Integer, Integer> candidateVotes = ResponseDB.getCandidateVotes();
-            request.setAttribute("candidateVotes", candidateVotes);
-            
             //
-            ArrayList<Party> partylists = PartyDB.readPartylist();
+            ArrayList<Party> partylists = PartyDB.readPartylistWithVotes();
             request.setAttribute("partylists", partylists);
-            HashMap<Integer, Integer> partylistVotes = ResponseDB.getPartylistVotes();
-            request.setAttribute("partylistVotes", partylistVotes);
             
             request.setAttribute("retrieval", new Date());
         } catch (Exception e) {

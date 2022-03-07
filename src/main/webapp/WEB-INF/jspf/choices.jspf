@@ -70,14 +70,9 @@
                                 </c:if>
                     <c:if test="${isResults}">
                         <span class="fw-bold fs-3">
-                        <c:choose>
-                            <c:when test="${candidateVotes.get(candidate.getId()) != null}">
-                                <fmt:formatNumber type="number" maxFractionDigits="0" value="${candidateVotes.get(candidate.getId())}" />
-                            </c:when>
-                            <c:otherwise>
-                                0
-                            </c:otherwise>
-                        </c:choose>
+                            <fmt:formatNumber type="number"
+                                              maxFractionDigits="0"
+                                              value="${candidate.getVotes()}" />
                         </span>
                     </c:if>
                     <c:if test="${isForm}">
@@ -160,16 +155,9 @@
                             </div>
                     <c:if test="${isResults}">
                         <span class="fw-bold fs-3">
-                        <c:choose>
-                            <c:when test="${partylistVotes.get(partylist.getId()) != null}">
-                                <fmt:formatNumber type="number"
-                                                  maxFractionDigits="0"
-                                                  value="${partylistVotes.get(partylist.getId())}" />
-                            </c:when>
-                            <c:otherwise>
-                                0
-                            </c:otherwise>
-                        </c:choose>
+                            <fmt:formatNumber type="number"
+                                              maxFractionDigits="0"
+                                              value="${partylist.getVotes()}" />
                         </span>
                     </c:if>
                     <c:if test="${isForm}">

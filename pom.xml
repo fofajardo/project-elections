@@ -53,5 +53,11 @@
         <artifactId>commons-lang3</artifactId>
         <version>3.12.0</version>
     </dependency>
+    <!-- JSON Simple (CL) -->
+    <dependency>
+        <groupId>com.github.cliftonlabs</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>4.0.0</version>
+    </dependency>
   </dependencies>
 </project>

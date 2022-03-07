@@ -1,7 +1,6 @@
 package elections;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class ResultsController extends HttpServlet {
             request.setAttribute("candidateVotes", candidateVotes);
             
             //
-            ArrayList<Party> partylists = PartyDB.read();
+            ArrayList<Party> partylists = PartyDB.readPartylist();
             request.setAttribute("partylists", partylists);
             HashMap<Integer, Integer> partylistVotes = ResponseDB.getPartylistVotes();
             request.setAttribute("partylistVotes", partylistVotes);

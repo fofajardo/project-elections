@@ -11,6 +11,7 @@ public class Candidate {
     private String suffix;
 
     private Party attachedParty;
+    private int votes;
     
     public int getId() {
         return id;
@@ -73,5 +74,12 @@ public class Candidate {
     }
     public void setAttachedParty(Party attachedParty) {
         this.attachedParty = attachedParty;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 }

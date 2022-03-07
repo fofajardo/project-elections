@@ -7,6 +7,8 @@ public class Party {
     private String alias;
     private boolean isPartylist;
 
+    private int votes;
+    
     public int getId() {
         return id;
     }
@@ -40,5 +42,12 @@ public class Party {
     }
     public void setPartylist(boolean isPartylist) {
         this.isPartylist = isPartylist;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 }

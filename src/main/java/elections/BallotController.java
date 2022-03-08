@@ -23,7 +23,7 @@ public class BallotController extends HttpServlet {
         if (requestURI.endsWith("/candidates")) {
             url = goCandidates(request, response);
         } else {
-            if (AccountController.redirectGuest(request, response)) {
+            if (AccountController.redirectRole(request, response, 0)) {
     	        return;
     	    }
     
@@ -40,7 +40,7 @@ public class BallotController extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (AccountController.redirectGuest(request, response)) {
+        if (AccountController.redirectRole(request, response, 0)) {
             return;
         }
 

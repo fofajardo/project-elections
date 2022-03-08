@@ -86,15 +86,15 @@
     </c:when>
     <c:otherwise>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" name="auth-emailOrUsername" placeholder="name@example.com" required>
-                        <label for="floatingInput">Email or username</label>
+                        <input type="text" class="form-control" id="auth-emailOrUsername" name="auth-emailOrUsername" placeholder="name@example.com" required>
+                        <label for="auth-emailOrUsername">Email or username</label>
                         <div class="invalid-feedback">
                             Please provide a valid email address or username.
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingPassword" name="auth-password" placeholder="password" required>
-                        <label for="floatingPassword">Password</label>
+                        <input type="password" class="form-control" id="auth-password" name="auth-password" placeholder="password" required>
+                        <label for="auth-password">Password</label>
                         <div class="invalid-feedback">
                             Please provide a password.
                         </div>

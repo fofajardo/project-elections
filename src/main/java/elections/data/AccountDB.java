@@ -216,6 +216,21 @@ public class AccountDB {
         }        
     }
 
+    public static void clearVoteState() throws SQLException {
+        Statement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "UPDATE `accounts` SET `dt_vote_recorded`=NULL";
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+    }
+    
     public static void delete(int id) throws SQLException {
         PreparedStatement statement = null;
         try {
@@ -224,7 +239,7 @@ public class AccountDB {
             String query = "DELETE FROM `accounts` WHERE `id`=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, id);
-            statement.executeUpdate(query);
+            statement.executeUpdate();
         } finally {
             if (statement != null) {
                 statement.close();

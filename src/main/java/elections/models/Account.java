@@ -106,4 +106,8 @@ public class Account {
     public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
+
+    public boolean isAdmin() {
+        return (roleId > 0);
+    }
 }

@@ -165,6 +165,21 @@ public class ResponseDB {
             String query = "DELETE FROM `responses` WHERE `voter_id` = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, voterId);
+            statement.executeUpdate();
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+    }
+
+    public static void deleteAll() throws SQLException {
+        Statement statement = null;
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+
+            String query = "TRUNCATE TABLE `responses`";
+            statement = connection.createStatement();
             statement.executeUpdate(query);
         } finally {
             if (statement != null) {

@@ -100,6 +100,14 @@
                 View Ballot Receipt
             </a>
         </li>
+        <c:if test="${account.isAdmin()}">
+        <li>
+            <a href="<c:url value='/accounts/admin'/>" class="nav-link link-dark ${navActiveAdmin}">
+                <i class="bi bi-shield-shaded me-2"></i>
+                Administration
+            </a>
+        </li>
+        </c:if>
         </c:if>
     </ul>
     <hr>

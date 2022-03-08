@@ -4,7 +4,7 @@
 <%@ include file="/WEB-INF/jspf/header.jspf" %>
 
 <div class="bg-primary text-center text-light px-4">
-    <div class="d-flex align-items-center justify-content-center flex-column vh-100">
+    <div class="container d-flex align-items-center justify-content-center flex-column vh-100">
         <img class="d-block mx-auto mb-4" src="<c:url value='/assets/images/home-1.svg'/>" width="250" height="150">
         <h1 class="display-5 fw-bold">Reliable, safe, and secure</h1>
         <div class="col-lg-6 mx-auto">

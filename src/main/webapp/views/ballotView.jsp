@@ -9,11 +9,13 @@
 <c:if test="${isReceipt}">
     <c:set var="pageSubtitle" value="Ballot Receipt"/>
     <c:set var="hideCandidateNumber" value="${true}"/>
+    <c:set var="dateLabel" value="Recorded on"/>
 </c:if>
 <c:if test="${isResults}">
     <c:set var="pageSubtitle" value="Election Results"/>
     <c:set var="hideCandidateNumber" value="${true}"/>
     <c:set var="boxStyle" value="min"/>
+    <c:set var="dateLabel" value="As of"/>
 </c:if>
 
 <%@ include file="/WEB-INF/jspf/header.jspf" %>
@@ -22,9 +24,9 @@
     <div id="ballot-title" class="my-3">
         <div class="h1">${pageSubtitle}</div>
         <div class="h6">MAY 9, 2022 NATIONAL AND LOCAL ELECTIONS</div>
-        <c:if test="${isResults}">
+        <c:if test="${isResults || isReceipt}">
         <div class="badge bg-primary f-3">
-        As of <fmt:formatDate type="both" dateStyle="long" timeStyle="long" value="${retrieval}" /> 
+            ${dateLabel} <fmt:formatDate type="both" dateStyle="long" timeStyle="long" value="${retrieval}" /> 
         </div>
         </c:if>
     </div>

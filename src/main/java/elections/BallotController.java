@@ -247,6 +247,8 @@ public class BallotController extends HttpServlet {
                 return null;
             }
 
+            request.setAttribute("retrieval", account.getVoteRecorded());
+            
             return "/views/ballotView.jsp";
         }
         return "/views/ballotReceiptEmpty.jsp";

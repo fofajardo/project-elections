@@ -26,6 +26,6 @@ public class AccountRequestListener implements ServletRequestListener {
         }
     }
 
-    public void requestDestroyed(ServletRequestEvent event)  {
+    public void requestDestroyed(ServletRequestEvent event) {
     }
 }

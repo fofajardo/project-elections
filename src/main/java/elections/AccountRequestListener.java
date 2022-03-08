@@ -1,6 +1,6 @@
 package elections;
 
-import elections.data.AccountDB;
+import elections.data.AccountDao;
 import elections.models.Account;
 import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
@@ -17,7 +17,7 @@ public class AccountRequestListener implements ServletRequestListener {
         Object accountId = session.getAttribute("accountId");
         if (accountId != null) {
             try {
-                Account account = AccountDB.readId((int)accountId);
+                Account account = AccountDao.readId((int)accountId);
                 request.setAttribute("account", account);
                 request.setAttribute("ballotSubmitted", account.getVoteRecorded());
             } catch (Exception e) {

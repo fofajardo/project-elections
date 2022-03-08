@@ -7,7 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import elections.models.*;
 
-public class AccountDB {
+public class AccountDao {
     private static Account createFromResultSet(ResultSet results)
             throws SQLException {
         Account item = new Account();

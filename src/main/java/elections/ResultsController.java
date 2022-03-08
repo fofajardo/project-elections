@@ -54,19 +54,19 @@ public class ResultsController extends HttpServlet {
             throws ServletException, IOException {
         request.setAttribute("navActiveResults", "active");
         try {
-            ArrayList<Position> positions = PositionDB.read();
+            ArrayList<Position> positions = PositionDao.read();
             request.setAttribute("positions",  positions);
 
             HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDB.readFromPositionWithVotes(positionId, 0);
+                ArrayList<Candidate> data = CandidateDao.readFromPositionWithVotes(positionId, 0);
                 candidates.put(positionId, data);
             }
             request.setAttribute("candidates", candidates);
             
             //
-            ArrayList<Party> partylists = PartyDB.readPartylistWithVotes(0);
+            ArrayList<Party> partylists = PartyDao.readPartylistWithVotes(0);
             request.setAttribute("partylists", partylists);
             
             request.setAttribute("retrieval", new Date());
@@ -86,10 +86,10 @@ public class ResultsController extends HttpServlet {
         JsonObject results = new JsonObject();
 
         try {
-            ArrayList<Position> positions = PositionDB.read();
+            ArrayList<Position> positions = PositionDao.read();
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDB.readFromPositionWithVotes(positionId, 12);
+                ArrayList<Candidate> data = CandidateDao.readFromPositionWithVotes(positionId, 12);
                 
                 ArrayList<String> graphLabels = new ArrayList<>();
                 ArrayList<Integer> graphData = new ArrayList<>();

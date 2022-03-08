@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 import elections.models.*;
 
-public class ResponseDB {
+public class ResponseDao {
     public static void create(Response voteEntry) throws SQLException {
         String query = "INSERT INTO `responses` "
                 + "(`voter_id`, `candidate_id`, `partylist_id`)"

@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 import elections.models.*;
 
-public class PositionDB {
+public class PositionDao {
     public static void create(Position position) throws SQLException {
         String query = "INSERT INTO `positions` "
                 + "(`position_name`, `position_alias`, `vote_limit`)"

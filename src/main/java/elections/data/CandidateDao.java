@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 import elections.models.*;
 
-public class CandidateDB {
+public class CandidateDao {
     private static Candidate createFromResultSet(ResultSet results)
             throws SQLException {
         Candidate item = new Candidate();

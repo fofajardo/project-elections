@@ -12,8 +12,8 @@ import java.util.Date;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import elections.data.AccountDB;
-import elections.data.ResponseDB;
+import elections.data.AccountDao;
+import elections.data.ResponseDao;
 import elections.models.Account;
 
 @WebServlet("/accounts/*")
@@ -121,7 +121,7 @@ public class AccountController extends HttpServlet {
             if (useQr) {
                 String uuid = request.getParameter("auth-uuid");
                 if (StringUtils.isNotBlank(uuid)) {
-                    account = AccountDB.readUuid(uuid);
+                    account = AccountDao.readUuid(uuid);
                 }
                 request.setAttribute("useQr", true);
             } else {
@@ -129,14 +129,14 @@ public class AccountController extends HttpServlet {
                 String password = request.getParameter("auth-password");
                 if (StringUtils.isNotBlank(emailOrUsername)
                         || StringUtils.isNotBlank(password)) {
-                    account = AccountDB.readCredentials(emailOrUsername, password);
+                    account = AccountDao.readCredentials(emailOrUsername, password);
                 }
             }
 
             if (account != null) {
                 HttpSession session = request.getSession();
                 account.setLastSignIn(Date.from(Instant.now()));
-                AccountDB.update(account);
+                AccountDao.update(account);
                 session.setAttribute("accountId", account.getId());
                 return redirectStatus(request, response);
             }
@@ -158,7 +158,7 @@ public class AccountController extends HttpServlet {
         
         request.setAttribute("navActiveAdmin", "active");
         try {
-            ArrayList<Account> accounts = AccountDB.read();
+            ArrayList<Account> accounts = AccountDao.read();
             request.setAttribute("accounts", accounts);
         } catch (Exception e) {
             return null;
@@ -177,8 +177,8 @@ public class AccountController extends HttpServlet {
 
         int targetId = Integer.valueOf(request.getParameter("id"));
         try {
-            ResponseDB.delete(targetId);
-            AccountDB.delete(targetId);
+            ResponseDao.delete(targetId);
+            AccountDao.delete(targetId);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -197,8 +197,8 @@ public class AccountController extends HttpServlet {
         }
         
         try {
-            ResponseDB.deleteAll();
-            AccountDB.clearVoteState();
+            ResponseDao.deleteAll();
+            AccountDao.clearVoteState();
         } catch (Exception e) {
             return null;
         }
@@ -231,7 +231,7 @@ public class AccountController extends HttpServlet {
         request.setAttribute("isEdit", true);
         try {
             int accountId = Integer.valueOf(request.getParameter("id"));
-            Account account = AccountDB.readId(accountId);
+            Account account = AccountDao.readId(accountId);
             
             request.setAttribute("nameFirst", account.getFirstName());
             request.setAttribute("nameMiddle", account.getMiddleName());
@@ -257,7 +257,7 @@ public class AccountController extends HttpServlet {
         try {
             if (isEdit) {
                 int accountId = Integer.valueOf(request.getParameter("target-id"));
-                account = AccountDB.readId(accountId);
+                account = AccountDao.readId(accountId);
             }
 
             account.setFirstName(request.getParameter("name-first"));
@@ -276,10 +276,10 @@ public class AccountController extends HttpServlet {
             }
             
             if (isEdit) {
-                AccountDB.update(account);
+                AccountDao.update(account);
             } else {
                 account.randomizeUuid();
-                AccountDB.create(account);
+                AccountDao.create(account);
             }
         } catch (Exception e) {
             return null;

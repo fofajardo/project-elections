@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 import elections.models.*;
 
-public class PartyDB {
+public class PartyDao {
     private static Party createFromResultSet(ResultSet results)
             throws SQLException {
         Party item = new Party();

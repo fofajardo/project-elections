@@ -8,47 +8,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import elections.models.*;
 
 public class AccountDB {
-    public static void create(Account account) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-    
-            String query = "INSERT INTO `accounts` ("
-                         + "`uuid`, `first_name`, "
-                         + "`middle_name`, `last_name`, `suffix`, "
-                         + "`username`, `email`, `password`, "
-                         + "`dt_last_signin`, `dt_vote_recorded`, `role_id`"
-                         + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            statement = connection.prepareStatement(query);
-
-            statement.setString(1, account.getUuid());
-            statement.setString(2, account.getFirstName());
-            statement.setString(3, account.getMiddleName());
-            statement.setString(4, account.getLastName());
-            statement.setString(5, account.getSuffix());
-            statement.setString(6, account.getUsername());
-            statement.setString(7, account.getEmail());
-            statement.setString(8, account.getPassword());
-            if (account.getLastSignIn() != null) {
-                statement.setTimestamp(9, new Timestamp(account.getLastSignIn().getTime()));
-            } else {
-                statement.setTimestamp(9, null);
-            }
-            if (account.getVoteRecorded() != null) {
-                statement.setTimestamp(10, new Timestamp(account.getVoteRecorded().getTime()));
-            } else {
-                statement.setTimestamp(10, null);
-            }
-            statement.setInt(11, account.getRoleId());
-
-            statement.executeUpdate();
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-    }
-
     private static Account createFromResultSet(ResultSet results)
             throws SQLException {
         Account item = new Account();
@@ -77,23 +36,50 @@ public class AccountDB {
         return item;
     }
 
+    public static void create(Account account) throws SQLException {
+        String query = "INSERT INTO `accounts` ("
+                + "`uuid`, `first_name`, "
+                + "`middle_name`, `last_name`, `suffix`, "
+                + "`username`, `email`, `password`, "
+                + "`dt_last_signin`, `dt_vote_recorded`, `role_id`"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, account.getUuid());
+            statement.setString(2, account.getFirstName());
+            statement.setString(3, account.getMiddleName());
+            statement.setString(4, account.getLastName());
+            statement.setString(5, account.getSuffix());
+            statement.setString(6, account.getUsername());
+            statement.setString(7, account.getEmail());
+            statement.setString(8, account.getPassword());
+            if (account.getLastSignIn() != null) {
+                statement.setTimestamp(9, new Timestamp(account.getLastSignIn().getTime()));
+            } else {
+                statement.setTimestamp(9, null);
+            }
+            if (account.getVoteRecorded() != null) {
+                statement.setTimestamp(10, new Timestamp(account.getVoteRecorded().getTime()));
+            } else {
+                statement.setTimestamp(10, null);
+            }
+            statement.setInt(11, account.getRoleId());
+
+            statement.executeUpdate();
+        }
+    }
+
+
     public static ArrayList<Account> read() throws SQLException {
         ArrayList<Account> itemList = new ArrayList<Account>();
-        Statement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `accounts`";
-            statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(query);
-
-            while (results.next()) {
-                Account item = createFromResultSet(results);
-                itemList.add(item);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+        String query = "SELECT * FROM `accounts`";
+        try (Connection connection = ConnectionUtil.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet results = statement.executeQuery(query)) {
+                while (results.next()) {
+                    Account item = createFromResultSet(results);
+                    itemList.add(item);
+                }
             }
         }
         return itemList;
@@ -101,20 +87,14 @@ public class AccountDB {
 
     public static Account readId(int id) throws SQLException {
         Account account = null;
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `accounts` WHERE `id`=?";
-            statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM `accounts` WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
-            ResultSet results = statement.executeQuery();
-            if (results.next()) {
-                account = createFromResultSet(results);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+            try (ResultSet results = statement.executeQuery()) {
+                if (results.next()) {
+                    account = createFromResultSet(results);
+                }
             }
         }
         return account;
@@ -122,20 +102,14 @@ public class AccountDB {
 
     public static Account readUuid(String uuid) throws SQLException {
         Account account = null;
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `accounts` WHERE `uuid`=?";
-            statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM `accounts` WHERE `uuid`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, uuid);
-            ResultSet results = statement.executeQuery();
-            if (results.next()) {
-                account = createFromResultSet(results);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+            try (ResultSet results = statement.executeQuery()) {
+                if (results.next()) {
+                    account = createFromResultSet(results);
+                }
             }
         }
         return account;
@@ -143,51 +117,41 @@ public class AccountDB {
 
     public static Account readCredentials(String emailOrUsername, String password) throws SQLException {
         Account account = null;
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `accounts` WHERE `email`=? OR `username`=?";
-            statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM `accounts` WHERE `email`=? OR `username`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, emailOrUsername);
             statement.setString(2, emailOrUsername);
-            ResultSet results = statement.executeQuery();
-            if (results.next()) {
-                account = createFromResultSet(results);
-                
-                String hashedPassword = DigestUtils.sha256Hex(password);
-                if (!account.getPassword().equals(hashedPassword)) {
-                    account = null;
+            try (ResultSet results = statement.executeQuery()) {
+                if (results.next()) {
+                    account = createFromResultSet(results);
+                    
+                    String hashedPassword = DigestUtils.sha256Hex(password);
+                    if (!account.getPassword().equals(hashedPassword)) {
+                        account = null;
+                    }
                 }
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
             }
         }
         return account;
     }
     
     public static void update(Account account) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "UPDATE `accounts` SET"
-                         + "    `uuid`=?,"
-                         + "    `first_name`=?,"
-                         + "    `middle_name`=?,"
-                         + "    `last_name`=?,"
-                         + "    `suffix`=?,"
-                         + "    `username`=?,"
-                         + "    `email`=?,"
-                         + "    `password`=?,"
-                         + "    `dt_last_signin`=?,"
-                         + "    `dt_vote_recorded`=?,"
-                         + "    `role_id`=?"
-                         + "    WHERE `id`=?";
-            statement = connection.prepareStatement(query);
-
+        String query = "UPDATE `accounts` SET"
+                + "    `uuid`=?,"
+                + "    `first_name`=?,"
+                + "    `middle_name`=?,"
+                + "    `last_name`=?,"
+                + "    `suffix`=?,"
+                + "    `username`=?,"
+                + "    `email`=?,"
+                + "    `password`=?,"
+                + "    `dt_last_signin`=?,"
+                + "    `dt_vote_recorded`=?,"
+                + "    `role_id`=?"
+                + "    WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, account.getUuid());
             statement.setString(2, account.getFirstName());
             statement.setString(3, account.getMiddleName());
@@ -209,41 +173,23 @@ public class AccountDB {
             statement.setInt(11, account.getRoleId());
             statement.setInt(12, account.getId());
             statement.executeUpdate();
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }        
+        }     
     }
 
     public static void clearVoteState() throws SQLException {
-        Statement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "UPDATE `accounts` SET `dt_vote_recorded`=NULL";
-            statement = connection.createStatement();
+        String query = "UPDATE `accounts` SET `dt_vote_recorded`=NULL";
+        try (Connection connection = ConnectionUtil.getConnection();
+             Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
         }
     }
     
     public static void delete(int id) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "DELETE FROM `accounts` WHERE `id`=?";
-            statement = connection.prepareStatement(query);
+        String query = "DELETE FROM `accounts` WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
         }
     }
 

@@ -5,29 +5,6 @@ import java.util.*;
 import elections.models.*;
 
 public class PartyDB {
-    public static void create(Party party) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "INSERT INTO `parties` "
-                         + "(`custom_order`, `party_name`, `party_alias`, `is_partylist`)"
-                         + "VALUES (?, ?, ?, ?)";
-            statement = connection.prepareStatement(query);
-
-            statement.setInt(1, party.getCustomOrder());
-            statement.setString(2, party.getName());
-            statement.setString(3, party.getAlias());
-            statement.setBoolean(4, party.isPartylist());
-
-            statement.executeUpdate();
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-    }
-
     private static Party createFromResultSet(ResultSet results)
             throws SQLException {
         Party item = new Party();
@@ -39,23 +16,31 @@ public class PartyDB {
         return item;
     }
 
+    public static void create(Party party) throws SQLException {
+        String query = "INSERT INTO `parties` "
+                + "(`custom_order`, `party_name`, `party_alias`, `is_partylist`)"
+                + "VALUES (?, ?, ?, ?)";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, party.getCustomOrder());
+            statement.setString(2, party.getName());
+            statement.setString(3, party.getAlias());
+            statement.setBoolean(4, party.isPartylist());
+
+            statement.executeUpdate();
+        }
+    }
+
     public static ArrayList<Party> read() throws SQLException {
         ArrayList<Party> itemList = new ArrayList<Party>();
-        Statement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `parties`";
-            statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(query);
-
-            while (results.next()) {
-                Party item = createFromResultSet(results);
-                itemList.add(item);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+        String query = "SELECT * FROM `parties`";
+        try (Connection connection = ConnectionUtil.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet results = statement.executeQuery(query)) {
+                while (results.next()) {
+                    Party item = createFromResultSet(results);
+                    itemList.add(item);
+                }
             }
         }
         return itemList;
@@ -63,21 +48,14 @@ public class PartyDB {
 
     public static Party readId(int partyId) throws SQLException {
         Party item = null;
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `parties` WHERE `id`=?";
-            statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM `parties` WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, partyId);
-            ResultSet results = statement.executeQuery();
-
-            while (results.next()) {
-                item = createFromResultSet(results);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) {
+                    item = createFromResultSet(results);
+                }
             }
         }
         return item;
@@ -85,21 +63,14 @@ public class PartyDB {
 
     public static ArrayList<Party> readPartylist() throws SQLException {
         ArrayList<Party> itemList = new ArrayList<Party>();
-        Statement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `parties` WHERE `is_partylist`=1 ORDER BY `custom_order`";
-            statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(query);
-
-            while (results.next()) {
-                Party item = createFromResultSet(results);
-                itemList.add(item);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+        String query = "SELECT * FROM `parties` WHERE `is_partylist`=1 ORDER BY `custom_order`";
+        try (Connection connection = ConnectionUtil.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet results = statement.executeQuery(query)) {
+                while (results.next()) {
+                    Party item = createFromResultSet(results);
+                    itemList.add(item);
+                }
             }
         }
         return itemList;
@@ -108,52 +79,41 @@ public class PartyDB {
     public static ArrayList<Party> readPartylistWithVotes(int limit)
            throws SQLException {
         ArrayList<Party> itemList = new ArrayList<Party>();
-        Statement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "SELECT * FROM `parties`"
-                         + "    LEFT JOIN ("
-                         + "        SELECT `partylist_id`, COUNT(`voter_id`) AS `votes`"
-                         + "        FROM `responses`"
-                         + "        WHERE `partylist_id` IS NOT NULL"
-                         + "        GROUP BY `partylist_id`"
-                         + "    ) partylistVotes"
-                         + "        ON `parties`.id = partylistVotes.partylist_id"
-                         + "    WHERE `is_partylist`=1"
-                         + "    ORDER BY votes DESC";
-            if (limit > 0) {
-                query += " LIMIT " + limit;
-            }
-            statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(query);
-
-            while (results.next()) {
-                Party item = createFromResultSet(results);
-                item.setVotes(results.getInt("votes"));
-                itemList.add(item);
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
+        String query = "SELECT * FROM `parties`"
+                + "    LEFT JOIN ("
+                + "        SELECT `partylist_id`, COUNT(`voter_id`) AS `votes`"
+                + "        FROM `responses`"
+                + "        WHERE `partylist_id` IS NOT NULL"
+                + "        GROUP BY `partylist_id`"
+                + "    ) partylistVotes"
+                + "        ON `parties`.id = partylistVotes.partylist_id"
+                + "    WHERE `is_partylist`=1"
+                + "    ORDER BY votes DESC";
+        if (limit > 0) {
+            query += " LIMIT " + limit;
+        }
+        try (Connection connection = ConnectionUtil.getConnection();
+             Statement statement = connection.createStatement()) {
+            try (ResultSet results = statement.executeQuery(query)) {
+                while (results.next()) {
+                    Party item = createFromResultSet(results);
+                    item.setVotes(results.getInt("votes"));
+                    itemList.add(item);
+                }
             }
         }
         return itemList;
     }
 
     public static void update(Party party) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-    
-            String query = "UPDATE `parties` SET"
-                         + "    `custom_order`=?, "
-                         + "    `party_name`=?, "
-                         + "    `party_alias`=?, "
-                         + "    `is_partylist`=? "
-                         + "    WHERE `id`=?";
-            statement = connection.prepareStatement(query);
-    
+        String query = "UPDATE `parties` SET"
+                + "    `custom_order`=?, "
+                + "    `party_name`=?, "
+                + "    `party_alias`=?, "
+                + "    `is_partylist`=? "
+                + "    WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, party.getCustomOrder());
             statement.setString(2, party.getName());
             statement.setString(3, party.getAlias());
@@ -161,26 +121,15 @@ public class PartyDB {
             statement.setInt(5, party.getId());
 
             statement.executeUpdate();
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }        
+        }
     }
 
     public static void delete(int id) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            Connection connection = ConnectionUtil.getConnection();
-
-            String query = "DELETE FROM `parties` WHERE `id`=?";
-            statement = connection.prepareStatement(query);
+        String query = "DELETE FROM `parties` WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate(query);
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
         }
     }
 

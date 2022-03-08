@@ -78,21 +78,21 @@ public class BallotController extends HttpServlet {
 	    }
 
 	    try {
-            ArrayList<Position> positions = PositionDao.read();
+            List<Position> positions = PositionDao.findAll();
             request.setAttribute("positions",  positions);
 
-            HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
+            HashMap<Integer, List<Candidate>> candidates = new HashMap<>();
             int[] maxRows = new int[positions.size()];
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDao.readFromPosition(positionId);
+                List<Candidate> data = CandidateDao.findByPosition(positionId);
                 candidates.put(positionId, data);
                 maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
             }
             request.setAttribute("candidates", candidates);
             request.setAttribute("maxRows", maxRows);
             
-            ArrayList<Party> partylists = PartyDao.readPartylist();
+            List<Party> partylists = PartyDao.findByPartylist();
             int partylistMaxRows = partylists.size() / 4 + ((partylists.size() % 4 == 0) ? 0 : 1);
             request.setAttribute("partylists", partylists);
             request.setAttribute("partylistMaxRows", partylistMaxRows);
@@ -109,9 +109,9 @@ public class BallotController extends HttpServlet {
 	    Account account = AccountController.getCurrentAccount(request);
 
 	    if (!isBallotSubmitted(account)) {
-            ArrayList<Position> positions = null;
+            List<Position> positions = null;
             try {
-                positions = PositionDao.read();
+                positions = PositionDao.findAll();
             } catch (SQLException e) {
                 positions = new ArrayList<Position>();
             }
@@ -206,8 +206,7 @@ public class BallotController extends HttpServlet {
         Account account = AccountController.getCurrentAccount(request);
         if (isBallotSubmitted(account)) {
             try {
-                ArrayList<Position> positions;
-                positions = PositionDao.read();
+                List<Position> positions = PositionDao.findAll();
                 request.setAttribute("positions",  positions);
 
                 HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
@@ -216,7 +215,7 @@ public class BallotController extends HttpServlet {
                     candidates.put(position.getId(), new ArrayList<Candidate>());
                 }
                 
-                ArrayList<Response> candidateVotes = ResponseDao.readFromVoterByCandidate(account.getId());
+                List<Response> candidateVotes = ResponseDao.findByCandidatesAndAccount(account.getId());
                 for (int i = 0; i < candidateVotes.size(); i++) {
                     Response vote = candidateVotes.get(i);
                     Candidate candidate = vote.getAttachedCandidate();
@@ -233,8 +232,8 @@ public class BallotController extends HttpServlet {
                 request.setAttribute("candidates", candidates);
                 request.setAttribute("maxRows", maxRows);
 
-                ArrayList<Response> partylistVotes = ResponseDao.readFromVoterByPartylist(account.getId());
-                ArrayList<Party> partylists = new ArrayList<>();
+                List<Response> partylistVotes = ResponseDao.findByPartylistAndAccount(account.getId());
+                List<Party> partylists = new ArrayList<>();
                 for (int i = 0; i < partylistVotes.size(); i++) {
                     Response vote = partylistVotes.get(i);
                     partylists.add(vote.getAttachedParty());
@@ -261,21 +260,21 @@ public class BallotController extends HttpServlet {
         request.setAttribute("navActiveCandidates", "active");
 
         try {
-            ArrayList<Position> positions = PositionDao.read();
+            List<Position> positions = PositionDao.findAll();
             request.setAttribute("positions",  positions);
 
-            HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
+            HashMap<Integer, List<Candidate>> candidates = new HashMap<>();
             int[] maxRows = new int[positions.size()];
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDao.readFromPosition(positionId);
+                List<Candidate> data = CandidateDao.findByPosition(positionId);
                 candidates.put(positionId, data);
                 maxRows[i] = data.size() / 4 + ((data.size() % 4 == 0) ? 0 : 1);
             }
             request.setAttribute("candidates", candidates);
             request.setAttribute("maxRows", maxRows);
 
-            ArrayList<Party> partylists = PartyDao.readPartylist();
+            List<Party> partylists = PartyDao.findByPartylist();
             int partylistMaxRows = partylists.size() / 4 + ((partylists.size() % 4 == 0) ? 0 : 1);
             request.setAttribute("partylists", partylists);
             request.setAttribute("partylistMaxRows", partylistMaxRows);

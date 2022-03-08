@@ -6,8 +6,8 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -121,7 +121,7 @@ public class AccountController extends HttpServlet {
             if (useQr) {
                 String uuid = request.getParameter("auth-uuid");
                 if (StringUtils.isNotBlank(uuid)) {
-                    account = AccountDao.readUuid(uuid);
+                    account = AccountDao.findByUuid(uuid);
                 }
                 request.setAttribute("useQr", true);
             } else {
@@ -129,7 +129,13 @@ public class AccountController extends HttpServlet {
                 String password = request.getParameter("auth-password");
                 if (StringUtils.isNotBlank(emailOrUsername)
                         || StringUtils.isNotBlank(password)) {
-                    account = AccountDao.readCredentials(emailOrUsername, password);
+                    account = AccountDao.findByEmailOrUsername(emailOrUsername);
+                    if (account != null) {
+                        String hashedPassword = DigestUtils.sha256Hex(password);
+                        if (!account.getPassword().equals(hashedPassword)) {
+                            account = null;
+                        }
+                    }
                 }
             }
 
@@ -141,6 +147,7 @@ public class AccountController extends HttpServlet {
                 return redirectStatus(request, response);
             }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return null;
         }
 
@@ -158,7 +165,7 @@ public class AccountController extends HttpServlet {
         
         request.setAttribute("navActiveAdmin", "active");
         try {
-            ArrayList<Account> accounts = AccountDao.read();
+            List<Account> accounts = AccountDao.findAll();
             request.setAttribute("accounts", accounts);
         } catch (Exception e) {
             return null;
@@ -198,7 +205,7 @@ public class AccountController extends HttpServlet {
         
         try {
             ResponseDao.deleteAll();
-            AccountDao.clearVoteState();
+            AccountDao.resetAllVoteCasted();
         } catch (Exception e) {
             return null;
         }
@@ -231,7 +238,7 @@ public class AccountController extends HttpServlet {
         request.setAttribute("isEdit", true);
         try {
             int accountId = Integer.valueOf(request.getParameter("id"));
-            Account account = AccountDao.readId(accountId);
+            Account account = AccountDao.findById(accountId);
             
             request.setAttribute("nameFirst", account.getFirstName());
             request.setAttribute("nameMiddle", account.getMiddleName());
@@ -257,7 +264,7 @@ public class AccountController extends HttpServlet {
         try {
             if (isEdit) {
                 int accountId = Integer.valueOf(request.getParameter("target-id"));
-                account = AccountDao.readId(accountId);
+                account = AccountDao.findById(accountId);
             }
 
             account.setFirstName(request.getParameter("name-first"));

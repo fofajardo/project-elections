@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import elections.data.*;
@@ -54,19 +55,19 @@ public class ResultsController extends HttpServlet {
             throws ServletException, IOException {
         request.setAttribute("navActiveResults", "active");
         try {
-            ArrayList<Position> positions = PositionDao.read();
+            List<Position> positions = PositionDao.findAll();
             request.setAttribute("positions",  positions);
 
-            HashMap<Integer, ArrayList<Candidate>> candidates = new HashMap<>();
+            HashMap<Integer, List<Candidate>> candidates = new HashMap<>();
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDao.readFromPositionWithVotes(positionId, 0);
+                List<Candidate> data = CandidateDao.findByPositionWithVotes(positionId, 0);
                 candidates.put(positionId, data);
             }
             request.setAttribute("candidates", candidates);
             
             //
-            ArrayList<Party> partylists = PartyDao.readPartylistWithVotes(0);
+            List<Party> partylists = PartyDao.findByPartylistWithVotes(0);
             request.setAttribute("partylists", partylists);
             
             request.setAttribute("retrieval", new Date());
@@ -86,13 +87,13 @@ public class ResultsController extends HttpServlet {
         JsonObject results = new JsonObject();
 
         try {
-            ArrayList<Position> positions = PositionDao.read();
+            List<Position> positions = PositionDao.findAll();
             for (int i = 0; i < positions.size(); i++) {
                 int positionId = positions.get(i).getId();
-                ArrayList<Candidate> data = CandidateDao.readFromPositionWithVotes(positionId, 12);
+                List<Candidate> data = CandidateDao.findByPositionWithVotes(positionId, 12);
                 
-                ArrayList<String> graphLabels = new ArrayList<>();
-                ArrayList<Integer> graphData = new ArrayList<>();
+                List<String> graphLabels = new ArrayList<>();
+                List<Integer> graphData = new ArrayList<>();
                 for (int j = 0; j < data.size(); j++) {
                     Candidate candidate = data.get(j);
                     String fullName = String.format(

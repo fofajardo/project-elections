@@ -17,7 +17,7 @@ public class AccountRequestListener implements ServletRequestListener {
         Object accountId = session.getAttribute("accountId");
         if (accountId != null) {
             try {
-                Account account = AccountDao.readId((int)accountId);
+                Account account = AccountDao.findById((int)accountId);
                 request.setAttribute("account", account);
                 request.setAttribute("ballotSubmitted", account.getVoteRecorded());
             } catch (Exception e) {

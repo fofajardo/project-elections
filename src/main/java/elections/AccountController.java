@@ -82,7 +82,7 @@ public class AccountController extends HttpServlet {
             getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-        }       
+        }
     }
 
     private String goSignIn(
@@ -123,7 +123,7 @@ public class AccountController extends HttpServlet {
                 if (StringUtils.isNotBlank(uuid)) {
                     account = AccountDB.readUuid(uuid);
                 }
-                request.setAttribute("useQr", true);;
+                request.setAttribute("useQr", true);
             } else {
                 String emailOrUsername = request.getParameter("auth-emailOrUsername");
                 String password = request.getParameter("auth-password");

@@ -4,7 +4,7 @@
   <artifactId>project-elections</artifactId>
   <version>0.0.1</version>
   <packaging>war</packaging>
-  <name>Project Elections</name>
+  <name>Halal</name>
 
   <build>
     <plugins>

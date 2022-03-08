@@ -44,6 +44,8 @@ public class AccountController extends HttpServlet {
             url = goAdd(request, response);
         } else if (requestURI.endsWith("/edit")) {
             url = goEdit(request, response);
+        } else if (requestURI.endsWith("/view-qr")) {
+            url = goViewQr(request, response);
         }
         
         doRespond(request, response, url);
@@ -285,6 +287,19 @@ public class AccountController extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + adminUrl);
         return "";
+    }
+
+    private String goViewQr(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        if (redirectRole(request, response, 0)) {
+            return "";
+        }
+        
+        request.setAttribute("navActiveViewQr", "active");
+
+        return "/views/accountQr.jsp";
     }
 
     private String redirectStatus(

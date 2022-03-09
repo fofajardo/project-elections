@@ -25,7 +25,7 @@ public class PartyDao {
                 + "    `custom_order`, `party_name`,"
                 + "    `party_alias`, `is_partylist`"
                 + ") VALUES (?, ?, ?, ?)";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setInt(1, party.getCustomOrder());
@@ -45,7 +45,7 @@ public class PartyDao {
     public static List<Party> findAll() throws SQLException {
         List<Party> itemList = new ArrayList<Party>();
         String sql = "SELECT * FROM `parties`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Party object
             // based on the data, and add them to the list
@@ -69,7 +69,7 @@ public class PartyDao {
     public static Party findById(int partyId) throws SQLException {
         Party item = null;
         String sql = "SELECT * FROM `parties` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, partyId);
             // Get the first result and create a Party object
@@ -94,7 +94,7 @@ public class PartyDao {
         String sql = "SELECT * FROM `parties`"
                 + "    WHERE `is_partylist`=1"
                 + "    ORDER BY `custom_order`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Party object
             // based on the data, and add them to the list
@@ -133,7 +133,7 @@ public class PartyDao {
         if (limit > 0) {
             sql += " LIMIT " + limit;
         }
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Party object
             // based on the data, and add them to the list
@@ -162,7 +162,7 @@ public class PartyDao {
                 + "    `party_alias`=?, "
                 + "    `is_partylist`=? "
                 + "    WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setInt(1, party.getCustomOrder());
@@ -182,7 +182,7 @@ public class PartyDao {
      */
     public static void delete(int partyId) throws SQLException {
         String sql = "DELETE FROM `parties` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, partyId);
             statement.executeUpdate(sql);

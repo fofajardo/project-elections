@@ -1,7 +1,7 @@
 package elections.data;
 import java.sql.*;
 
-public class ConnectionUtil {
+public class ConnectionUtils {
     private static final String CONN_USERNAME = "root";
     private static final String CONN_PASSWORD = "";
     private static final String DB_SERVER = "localhost";

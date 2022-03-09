@@ -28,7 +28,7 @@ public class AccountDao {
                 + "    `email`, `password`, `dt_last_signin`,"
                 + "    `dt_vote_recorded`, `role_id`"
                 + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setString(1, account.getUuid());
@@ -67,7 +67,7 @@ public class AccountDao {
     public static List<Account> findAll() throws SQLException {
         List<Account> itemList = new ArrayList<>();
         String sql = "SELECT * FROM `accounts`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create an Account object
             // based on the data, and add them to the list
@@ -91,7 +91,7 @@ public class AccountDao {
     public static Account findById(int accountId) throws SQLException {
         Account account = null;
         String sql = "SELECT * FROM `accounts` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             // Get the first result and create an Account object
@@ -115,7 +115,7 @@ public class AccountDao {
     public static Account findByUuid(String uuid) throws SQLException {
         Account account = null;
         String sql = "SELECT * FROM `accounts` WHERE `uuid`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, uuid);
             // Get the first result and create an Account object
@@ -140,7 +140,7 @@ public class AccountDao {
             throws SQLException {
         Account account = null;
         String sql = "SELECT * FROM `accounts` WHERE `email`=? OR `username`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, emailOrUsername);
             statement.setString(2, emailOrUsername);
@@ -175,7 +175,7 @@ public class AccountDao {
                 + "    `dt_vote_recorded`=?,"
                 + "    `role_id`=?"
                 + "    WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setString(1, account.getUuid());
@@ -213,7 +213,7 @@ public class AccountDao {
      */
     public static void resetAllVoteCasted() throws SQLException {
         String sql = "UPDATE `accounts` SET `dt_vote_recorded`=NULL";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         }
@@ -227,7 +227,7 @@ public class AccountDao {
      */
     public static void delete(int id) throws SQLException {
         String sql = "DELETE FROM `accounts` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             statement.executeUpdate();

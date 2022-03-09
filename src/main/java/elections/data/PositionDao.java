@@ -24,7 +24,7 @@ public class PositionDao {
         String sql = "INSERT INTO `positions` ("
                 + "    `position_name`, `position_alias`, `vote_limit`"
                 + ") VALUES (?, ?, ?)";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setString(1, position.getName());
@@ -43,7 +43,7 @@ public class PositionDao {
     public static List<Position> findAll() throws SQLException {
         List<Position> itemList = new ArrayList<Position>();
         String sql = "SELECT * FROM `positions`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Position object
             // based on the data, and add them to the list
@@ -73,7 +73,7 @@ public class PositionDao {
                 + "    `position_alias`=?, "
                 + "    `vote_limit`=? "
                 + "    WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setString(1, position.getName());
@@ -92,7 +92,7 @@ public class PositionDao {
      */
     public static void delete(int positionId) throws SQLException {
         String sql = "DELETE FROM `positions` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, positionId);
             statement.executeUpdate(sql);

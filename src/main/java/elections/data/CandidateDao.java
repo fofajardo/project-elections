@@ -27,7 +27,7 @@ public class CandidateDao {
                 + "    `first_name`, `middle_name`,"
                 + "    `last_name`, `suffix`"
                 + ") VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setInt(1, candidate.getPositionId());
@@ -49,7 +49,7 @@ public class CandidateDao {
     public static List<Candidate> findAll() throws SQLException {
         List<Candidate> itemList = new ArrayList<>();
         String sql = "SELECT * FROM `candidates`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Candidate object
             // based on the data, and add them to the list
@@ -79,7 +79,7 @@ public class CandidateDao {
                 + "        ON `candidates`.partylist_id = `parties`.id "
                 + "    WHERE `position_id`=?"
                 + "    ORDER BY `last_name`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, positionId);
             // Iterate over the results, create a Candidate object
@@ -135,7 +135,7 @@ public class CandidateDao {
         if (limit > 0) {
             sql += " LIMIT " + limit;
         }
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, positionId);
             // Iterate over the results, create a Candidate object
@@ -179,7 +179,7 @@ public class CandidateDao {
                 + "    `last_name`=?,"
                 + "    `suffix`=?"
                 + "    WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setInt(1, candidate.getPositionId());
@@ -201,7 +201,7 @@ public class CandidateDao {
      */
     public static void delete(int candidateId) throws SQLException {
         String sql = "DELETE FROM `candidates` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, candidateId);
             statement.executeUpdate(sql);

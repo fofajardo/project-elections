@@ -27,7 +27,7 @@ public class ResponseDao {
         String sql = "INSERT INTO `responses` ("
                 + "    `voter_id`, `candidate_id`, `partylist_id`"
                 + ") VALUES (?, ?, ?)";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             // Set parameters that correspond to the statement
             statement.setInt(1, response.getVoterId());
@@ -58,7 +58,7 @@ public class ResponseDao {
     public static List<Response> findAll() throws SQLException {
         List<Response> itemList = new ArrayList<Response>();
         String sql = "SELECT * FROM `responses`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Response object
             // based on the data, and add them to the list
@@ -92,7 +92,7 @@ public class ResponseDao {
                 + "    LEFT JOIN `parties`"
                 + "        ON `candidates`.partylist_id = `parties`.id"
                 + "    WHERE `voter_id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             // Iterate over the results, create a Response object
@@ -147,7 +147,7 @@ public class ResponseDao {
                 + "    INNER JOIN `parties`"
                 + "        ON `responses`.partylist_id = `parties`.id"
                 + "    WHERE `voter_id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             // Iterate over the results, create a Response object
@@ -195,7 +195,7 @@ public class ResponseDao {
      */
     public static void delete(int accountId) throws SQLException {
         String sql = "DELETE FROM `responses` WHERE `voter_id` = ?";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             statement.executeUpdate();
@@ -220,7 +220,7 @@ public class ResponseDao {
      */
     public static void deleteAll() throws SQLException {
         String query = "TRUNCATE TABLE `responses`";
-        try (Connection connection = ConnectionUtil.getConnection();
+        try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         }

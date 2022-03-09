@@ -211,7 +211,7 @@ public class AccountDao {
      *
      * @throws SQLException if a database access error occurs
      */
-    public static void resetAllVoteCasted() throws SQLException {
+    public static void resetAllVoteRecorded() throws SQLException {
         String sql = "UPDATE `accounts` SET `dt_vote_recorded`=NULL";
         try (Connection connection = ConnectionUtils.getConnection();
                 Statement statement = connection.createStatement()) {

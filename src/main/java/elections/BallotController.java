@@ -215,7 +215,7 @@ public class BallotController extends HttpServlet {
                     candidates.put(position.getId(), new ArrayList<Candidate>());
                 }
                 
-                List<Response> candidateVotes = ResponseDao.findByCandidatesAndAccount(account.getId());
+                List<Response> candidateVotes = ResponseDao.findByAccountAndCandidate(account.getId());
                 for (int i = 0; i < candidateVotes.size(); i++) {
                     Response vote = candidateVotes.get(i);
                     Candidate candidate = vote.getAttachedCandidate();
@@ -232,7 +232,7 @@ public class BallotController extends HttpServlet {
                 request.setAttribute("candidates", candidates);
                 request.setAttribute("maxRows", maxRows);
 
-                List<Response> partylistVotes = ResponseDao.findByPartylistAndAccount(account.getId());
+                List<Response> partylistVotes = ResponseDao.findByAccountAndPartylist(account.getId());
                 List<Party> partylists = new ArrayList<>();
                 for (int i = 0; i < partylistVotes.size(); i++) {
                     Response vote = partylistVotes.get(i);

@@ -1,22 +1,32 @@
 package elections.data;
 
-import java.sql.*;
-import java.util.*;
-import elections.models.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import elections.models.Position;
+
+/**
+ * This class defines static methods for accessing data related to positions.
+ */
 public class PositionDao {
     /**
-     * Inserts a new position record.
-     * @param position a {@code Position} object from which to read the data
+     * Inserts a record using data from the specified position.
+     *
+     * @param position the {@link Position} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void create(Position position) throws SQLException {
-        String query = "INSERT INTO `positions` "
-                + "(`position_name`, `position_alias`, `vote_limit`)"
-                + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO `positions` ("
+                + "    `position_name`, `position_alias`, `vote_limit`"
+                + ") VALUES (?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            // Set parameters that correspond to the query
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            // Set parameters that correspond to the statement
             statement.setString(1, position.getName());
             statement.setString(2, position.getAlias());
             statement.setInt(3, position.getVoteLimit());
@@ -25,18 +35,19 @@ public class PositionDao {
     }
 
     /**
-     * Retrieves all position records.
-     * @return a {@code List<Position>} collection containing {@code Position} objects 
-     * @throws SQLException
+     * Returns a list containing all position records.
+     *
+     * @return a list containing {@link Position} objects
+     * @throws SQLException if a database access error occurs
      */
     public static List<Position> findAll() throws SQLException {
         List<Position> itemList = new ArrayList<Position>();
-        String query = "SELECT * FROM `positions`";
+        String sql = "SELECT * FROM `positions`";
         try (Connection connection = ConnectionUtil.getConnection();
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Position object
             // based on the data, and add them to the list
-            try (ResultSet results = statement.executeQuery(query)) {
+            try (ResultSet results = statement.executeQuery(sql)) {
                 while (results.next()) {
                     Position item = new Position();
                     item.setId(results.getInt(1));
@@ -51,44 +62,47 @@ public class PositionDao {
     }
 
     /**
-     * Modifies an existing position record.
-     * @param position an {@code Position} object from which to read the data 
+     * Updates a record using data from the specified position.
+     *
+     * @param position the {@link Position} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void update(Position position) throws SQLException {
-        String query = "UPDATE `positions` SET"
+        String sql = "UPDATE `positions` SET"
                 + "    `position_name`=?, "
                 + "    `position_alias`=?, "
                 + "    `vote_limit`=? "
                 + "    WHERE `id`=?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            // Set parameters that correspond to the query
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            // Set parameters that correspond to the statement
             statement.setString(1, position.getName());
             statement.setString(2, position.getAlias());
             statement.setInt(3, position.getVoteLimit());
             statement.setInt(4, position.getId());
             statement.executeUpdate();
-        }        
-    }
-
-    /**
-     * Deletes a position record matching the given ID.
-     * @param id the position ID
-     * @throws SQLException if a database access error occurs
-     */
-    public static void delete(int id) throws SQLException {
-        String query = "DELETE FROM `positions` WHERE `id`=?";
-        try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            statement.executeUpdate(query);
         }
     }
 
     /**
-     * Deletes a position record matching the ID of the given object.
-     * @param position the {@code Position} object
+     * Deletes a record matching the specified position identifier.
+     *
+     * @param positionId the position identifier
+     * @throws SQLException if a database access error occurs
+     */
+    public static void delete(int positionId) throws SQLException {
+        String sql = "DELETE FROM `positions` WHERE `id`=?";
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, positionId);
+            statement.executeUpdate(sql);
+        }
+    }
+
+    /**
+     * Deletes a record matching the identifier of the specified position.
+     *
+     * @param position the {@link Position} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void delete(Position position) throws SQLException {

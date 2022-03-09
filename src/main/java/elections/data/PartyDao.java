@@ -1,22 +1,33 @@
 package elections.data;
 
-import java.sql.*;
-import java.util.*;
-import elections.models.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import elections.models.Party;
+
+/**
+ * This class defines static methods for accessing data related to parties.
+ */
 public class PartyDao {
     /**
-     * Inserts a new party record.
-     * @param party a {@code Party} object from which to read the data 
+     * Inserts a record using data from the specified party.
+     *
+     * @param party the {@link Party} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void create(Party party) throws SQLException {
-        String query = "INSERT INTO `parties` "
-                + "(`custom_order`, `party_name`, `party_alias`, `is_partylist`)"
-                + "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO `parties` ("
+                + "    `custom_order`, `party_name`,"
+                + "    `party_alias`, `is_partylist`"
+                + ") VALUES (?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            // Set parameters that correspond to the query
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            // Set parameters that correspond to the statement
             statement.setInt(1, party.getCustomOrder());
             statement.setString(2, party.getName());
             statement.setString(3, party.getAlias());
@@ -25,21 +36,22 @@ public class PartyDao {
         }
     }
 
-    /***
-     * Retrieves all party records.
-     * @return a {@code List<Party>} collection containing {@code Party} objects
+    /**
+     * Returns a list containing all parties.
+     *
+     * @return a list containing {@link Party} objects
      * @throws SQLException
      */
     public static List<Party> findAll() throws SQLException {
         List<Party> itemList = new ArrayList<Party>();
-        String query = "SELECT * FROM `parties`";
+        String sql = "SELECT * FROM `parties`";
         try (Connection connection = ConnectionUtil.getConnection();
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Party object
             // based on the data, and add them to the list
-            try (ResultSet results = statement.executeQuery(query)) {
+            try (ResultSet results = statement.executeQuery(sql)) {
                 while (results.next()) {
-                    Party item = createFromResultSet(results);
+                    Party item = modelFromResultSet(results);
                     itemList.add(item);
                 }
             }
@@ -48,22 +60,23 @@ public class PartyDao {
     }
 
     /**
-     * Retrieves a party record matching the given ID.
-     * @param id the party ID
-     * @return a {@code Party} object of the matching record
+     * Returns a party matching the specified party identifier.
+     *
+     * @param id the party identifier
+     * @return a {@link Party} object
      * @throws SQLException if a database access error occurs
      */
     public static Party findById(int partyId) throws SQLException {
         Party item = null;
-        String query = "SELECT * FROM `parties` WHERE `id`=?";
+        String sql = "SELECT * FROM `parties` WHERE `id`=?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, partyId);
             // Get the first result and create a Party object
             // based on the data
             try (ResultSet results = statement.executeQuery()) {
                 if (results.next()) {
-                    item = createFromResultSet(results);
+                    item = modelFromResultSet(results);
                 }
             }
         }
@@ -71,20 +84,23 @@ public class PartyDao {
     }
 
     /**
-     * Retrieves party list records.
-     * @return a {@code List<Party>} collection containing {@code Party} objects
+     * Returns a list containing parties that are classified as a party list.
+     *
+     * @return a list containing {@link Party} objects
      * @throws SQLException if a database access error occurs
      */
     public static List<Party> findByPartylist() throws SQLException {
         List<Party> itemList = new ArrayList<Party>();
-        String query = "SELECT * FROM `parties` WHERE `is_partylist`=1 ORDER BY `custom_order`";
+        String sql = "SELECT * FROM `parties`"
+                + "    WHERE `is_partylist`=1"
+                + "    ORDER BY `custom_order`";
         try (Connection connection = ConnectionUtil.getConnection();
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Party object
             // based on the data, and add them to the list
-            try (ResultSet results = statement.executeQuery(query)) {
+            try (ResultSet results = statement.executeQuery(sql)) {
                 while (results.next()) {
-                    Party item = createFromResultSet(results);
+                    Party item = modelFromResultSet(results);
                     itemList.add(item);
                 }
             }
@@ -93,17 +109,18 @@ public class PartyDao {
     }
 
     /**
-     * Retrieves party list records, including the number of
-     * votes cast for each party list.
-     * @param limit the limit number of results, use {@code 0}
-     *        if there's no limit
-     * @return a {@code List<Party>} collection containing {@code Party} objects
+     * Returns a list containing parties that are classified as a party list,
+     * including the number of votes cast for each party list.
+     *
+     * @param limit the limit to the number of {@link Party}
+     *              objects returned by this method
+     * @return a list containing {@link Party} objects
      * @throws SQLException if a database access error occurs
      */
     public static List<Party> findByPartylistWithVotes(int limit)
-           throws SQLException {
+            throws SQLException {
         List<Party> itemList = new ArrayList<Party>();
-        String query = "SELECT * FROM `parties`"
+        String sql = "SELECT * FROM `parties`"
                 + "    LEFT JOIN ("
                 + "        SELECT `partylist_id`, COUNT(`voter_id`) AS `votes`"
                 + "        FROM `responses`"
@@ -114,15 +131,15 @@ public class PartyDao {
                 + "    WHERE `is_partylist`=1"
                 + "    ORDER BY votes DESC";
         if (limit > 0) {
-            query += " LIMIT " + limit;
+            sql += " LIMIT " + limit;
         }
         try (Connection connection = ConnectionUtil.getConnection();
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Party object
             // based on the data, and add them to the list
-            try (ResultSet results = statement.executeQuery(query)) {
+            try (ResultSet results = statement.executeQuery(sql)) {
                 while (results.next()) {
-                    Party item = createFromResultSet(results);
+                    Party item = modelFromResultSet(results);
                     // Get number of votes from joined votes column
                     item.setVotes(results.getInt("votes"));
                     itemList.add(item);
@@ -133,20 +150,21 @@ public class PartyDao {
     }
 
     /**
-     * Modifies an existing party record.
-     * @param party an {@code Party} object from which to read the data 
+     * Updates a record using data from the specified party.
+     *
+     * @param party the {@link Party} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void update(Party party) throws SQLException {
-        String query = "UPDATE `parties` SET"
+        String sql = "UPDATE `parties` SET"
                 + "    `custom_order`=?, "
                 + "    `party_name`=?, "
                 + "    `party_alias`=?, "
                 + "    `is_partylist`=? "
                 + "    WHERE `id`=?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            // Set parameters that correspond to the query
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            // Set parameters that correspond to the statement
             statement.setInt(1, party.getCustomOrder());
             statement.setString(2, party.getName());
             statement.setString(3, party.getAlias());
@@ -157,22 +175,24 @@ public class PartyDao {
     }
 
     /**
-     * Deletes a party record matching the given ID. 
-     * @param id the party ID
+     * Deletes a record matching the specified party identifier.
+     *
+     * @param partyId the party identifier
      * @throws SQLException if a database access error occurs
      */
-    public static void delete(int id) throws SQLException {
-        String query = "DELETE FROM `parties` WHERE `id`=?";
+    public static void delete(int partyId) throws SQLException {
+        String sql = "DELETE FROM `parties` WHERE `id`=?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            statement.executeUpdate(query);
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, partyId);
+            statement.executeUpdate(sql);
         }
     }
 
     /**
-     * Deletes a party record matching the ID of the given object. 
-     * @param party the {@code Party} object
+     * Deletes a record matching the identifier of the specified party.
+     *
+     * @param party the {@link Party} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void delete(Party party) throws SQLException {
@@ -180,12 +200,13 @@ public class PartyDao {
     }
 
     /**
-     * Creates a {@code Party} object using the given {@code ResultSet}.
-     * @param results the {@code ResultSet} from which values will be retrieved
-     * @return a {@code Party} object
+     * Returns a party using data from the specified {@code ResultSet}.
+     *
+     * @param results the {@link ResultSet} whose values will be retrieved
+     * @return a {@link Party} object
      * @throws SQLException if a database access error occurs
      */
-    private static Party createFromResultSet(ResultSet results)
+    private static Party modelFromResultSet(ResultSet results)
             throws SQLException {
         Party item = new Party();
         // Retrieve values from the designated columns

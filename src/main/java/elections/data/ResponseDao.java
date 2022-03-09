@@ -1,25 +1,38 @@
 package elections.data;
 
-import java.sql.*;
-import java.util.*;
-import elections.models.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
+import elections.models.Candidate;
+import elections.models.Party;
+import elections.models.Response;
+
+/**
+ * This class defines static methods for accessing data related to responses.
+ */
 public class ResponseDao {
     /**
-     * Inserts a new response record.
-     * @param response a {@code Response} object from which to read the data
+     * Inserts a record using data from the specified response.
+     *
+     * @param response the {@link Response} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void create(Response response) throws SQLException {
-        String query = "INSERT INTO `responses` "
-                + "(`voter_id`, `candidate_id`, `partylist_id`)"
-                + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO `responses` ("
+                + "    `voter_id`, `candidate_id`, `partylist_id`"
+                + ") VALUES (?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            // Set parameters that correspond to the query
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            // Set parameters that correspond to the statement
             statement.setInt(1, response.getVoterId());
-            // Interpret candidate or partylist ID that is set
-            // to zero (0) as SQL NULL
+            // Interpret candidate or partylist identifier that is
+            // set to zero (0) as SQL NULL
             int candidateId = response.getCandidateId();
             if (candidateId == 0) {
                 statement.setNull(2, Types.INTEGER);
@@ -37,18 +50,19 @@ public class ResponseDao {
     }
 
     /**
-     * Retrieves all response records.
-     * @return a {@code List<Response>} collection containing {@code Response} objects
+     * Returns a list containing all responses.
+     *
+     * @return a list containing {@link Response} objects
      * @throws SQLException if a database access error occurs
      */
     public static List<Response> findAll() throws SQLException {
         List<Response> itemList = new ArrayList<Response>();
-        String query = "SELECT * FROM `responses`";
+        String sql = "SELECT * FROM `responses`";
         try (Connection connection = ConnectionUtil.getConnection();
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
             // Iterate over the results, create a Response object
             // based on the data, and add them to the list
-            try (ResultSet results = statement.executeQuery(query)) {
+            try (ResultSet results = statement.executeQuery(sql)) {
                 while (results.next()) {
                     Response item = new Response();
                     item.setVoterId(results.getInt(1));
@@ -62,22 +76,24 @@ public class ResponseDao {
     }
 
     /**
-     * Retrieves response records from the given account ID,
-     * limited only to candidates.
-     * @param accountId the account ID
-     * @return a {@code List<Response>} collection containing {@code Response} objects
+     * Returns a list containing responses for candidates matching
+     * the specified account identifier.
+     *
+     * @param accountId the account identifier
+     * @return a list containing {@link Response} objects
      * @throws SQLException if a database access error occurs
      */
-    public static List<Response> findByCandidatesAndAccount(int accountId) throws SQLException {
+    public static List<Response> findByAccountAndCandidate(int accountId)
+            throws SQLException {
         List<Response> itemList = new ArrayList<Response>();
-        String query = "SELECT * FROM `responses`"
+        String sql = "SELECT * FROM `responses`"
                 + "    INNER JOIN `candidates`"
                 + "        ON `responses`.candidate_id = `candidates`.id"
                 + "    LEFT JOIN `parties`"
                 + "        ON `candidates`.partylist_id = `parties`.id"
                 + "    WHERE `voter_id`=?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             // Iterate over the results, create a Response object
             // based on the data, and add them to the list
@@ -86,8 +102,8 @@ public class ResponseDao {
                     Response item = new Response();
                     item.setVoterId(results.getInt(1));
                     item.setCandidateId(results.getInt(2));
-                    // Create and attach a Candidate object to the Response object
-                    // which can be used to retrieve candidate details
+                    // Create and attach a Candidate object to the Response
+                    // object which can be used to retrieve candidate details
                     Candidate attachedCandidate = new Candidate();
                     attachedCandidate.setId(results.getInt(4));
                     attachedCandidate.setPositionId(results.getInt(5));
@@ -97,8 +113,8 @@ public class ResponseDao {
                     attachedCandidate.setLastName(results.getString(9));
                     attachedCandidate.setSuffix(results.getString(10));
                     item.setAttachedCandidate(attachedCandidate);
-                    // Create and attach a Party object to the Candidate object
-                    // which can be used to retrieve party details
+                    // Create and attach a Party object to the Candidate
+                    // object which can be used to retrieve party details
                     int partyId = results.getInt(11);
                     if (partyId > 0) {
                         Party attachedParty = new Party();
@@ -117,20 +133,22 @@ public class ResponseDao {
     }
 
     /**
-     * Retrieves response records from the given account ID,
-     * limited only to party lists.
-     * @param accountId the account ID
-     * @return a {@code List<Response>} collection containing {@code Response} objects
+     * Returns a list containing responses for party lists matching
+     * the specified account identifier.
+     *
+     * @param accountId the account identifier
+     * @return a list containing {@link Response} objects
      * @throws SQLException if a database access error occurs
      */
-    public static List<Response> findByPartylistAndAccount(int accountId) throws SQLException {
+    public static List<Response> findByAccountAndPartylist(int accountId)
+            throws SQLException {
         List<Response> itemList = new ArrayList<Response>();
-        String query = "SELECT * FROM `responses`"
+        String sql = "SELECT * FROM `responses`"
                 + "    INNER JOIN `parties`"
                 + "        ON `responses`.partylist_id = `parties`.id"
                 + "    WHERE `voter_id`=?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             // Iterate over the results, create a Response object
             // based on the data, and add them to the list
@@ -159,33 +177,36 @@ public class ResponseDao {
     }
 
     /**
-     * Modifies an existing response record.
-     * @param response a {@code Response} object from which to read the data
+     * Updates a record using data from the specified response.
+     *
+     * @param response the {@link Response} object whose data will be used
      * @throws SQLException if a database access error occurs
      */
     public static void update(Response response) throws SQLException {
-        // Vote entries cannot be modified or updated
+        // Responses cannot be updated
         return;
     }
 
     /**
-     * Deletes all response records matching the given account ID.
+     * Deletes all responses matching the specified account identifier.
+     *
      * @param accountId the account ID
      * @throws SQLException if a database access error occurs
      */
     public static void delete(int accountId) throws SQLException {
-        String query = "DELETE FROM `responses` WHERE `voter_id` = ?";
+        String sql = "DELETE FROM `responses` WHERE `voter_id` = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             statement.executeUpdate();
         }
     }
 
     /**
-     * Deletes all response records matching the account ID
-     * from the given object.
-     * @param response a {@code Response} object from which to read the data
+     * Deletes all responses matching the account identifier of
+     * the specified response.
+     *
+     * @param response the {@link Response} object
      * @throws SQLException if a database access error occurs
      */
     public static void delete(Response response) throws SQLException {
@@ -193,13 +214,14 @@ public class ResponseDao {
     }
 
     /**
-     * Deletes all response records.
+     * Deletes all responses.
+     *
      * @throws SQLException if a database access error occurs
      */
     public static void deleteAll() throws SQLException {
         String query = "TRUNCATE TABLE `responses`";
         try (Connection connection = ConnectionUtil.getConnection();
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         }
     }

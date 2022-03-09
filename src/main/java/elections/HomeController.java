@@ -8,27 +8,38 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet processes requests for the default (root) context and /home.
+ */
 @WebServlet(urlPatterns = { "", "/home" })
 public class HomeController extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5213345009456204126L;
 
-    protected void doGet(
-            HttpServletRequest request,
+    /**
+     * Path to the home view.
+     */
+    private static final String VIEW_HOME = "/views/home.jsp";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doGet(HttpServletRequest request,
             HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setAttribute("navActiveHome", "active");
-
-        String url = "/views/home.jsp";
-        getServletContext()
-            .getRequestDispatcher(url)
-            .forward(request, response);
+                    throws ServletException, IOException {
+        // Set active sidebar page
+        ControllerUtils.setActiveSidebarPage(request, "Home");
+        // Respond with target view path
+        ControllerUtils.respond(getServletContext(), request, response, VIEW_HOME);
     }
 
-    protected void doPost(
-            HttpServletRequest request,
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doPost(HttpServletRequest request,
             HttpServletResponse response)
-            throws ServletException, IOException {
+                    throws ServletException, IOException {
         doGet(request, response);
     }
-
 }

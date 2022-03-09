@@ -8,14 +8,26 @@ import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * This request listener processes all requests and sets the attributes
+ * for checking if an account is already signed in and if
+ * they have submitted a ballot.
+ */
 @WebListener
 public class AccountRequestListener implements ServletRequestListener {
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void requestInitialized(ServletRequestEvent event) {
         HttpServletRequest request = (HttpServletRequest)event.getServletRequest();
         HttpSession session = request.getSession();
+        // Get the account identifier
         Object accountId = session.getAttribute("accountId");
         if (accountId != null) {
+            // Try to get the associated account and their ballot
+            // submission status, then store them as attributes
             try {
                 Account account = AccountDao.findById((int)accountId);
                 request.setAttribute("account", account);
@@ -26,6 +38,11 @@ public class AccountRequestListener implements ServletRequestListener {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void requestDestroyed(ServletRequestEvent event) {
+        // There's nothing to do here.
     }
 }

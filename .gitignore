@@ -116,6 +116,9 @@ local.properties
 .recommenders
 .classpath
 
+# Javadoc
+doc/
+
 # External tool builders
 .externalToolBuilders/
 

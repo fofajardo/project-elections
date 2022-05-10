@@ -27,3 +27,4 @@ The following directories and files are covered by these licenses:
 - src/main/webapp/assets/bs [MIT License: Copyright 2011-2021 The Bootstrap Authors, Copyright 2011-2021 Twitter, Inc.] ([Repository](https://github.com/twbs/bootstrap/))
 - src/main/webapp/assets/qrcode.min.js [MIT License: Copyright 2012 davidshimjs] ([Repository](https://github.com/davidshimjs/qrcodejs/))
 - src/main/webapp/assets/qrcode-scan.min [Apache License 2.0] ([Repository](https://github.com/mebjas/html5-qrcode))
+- src/main/webapp/assets/images [unDraw License: Copyright 2022 Katerina Limpitsouni] ([Official Site](https://undraw.co/))

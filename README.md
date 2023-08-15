@@ -17,7 +17,7 @@ The documentation is mostly complete, with comments for every class, with the ex
 
 ## License
 
-Copyright © 2022 Francis Fajardo
+Copyright © 2022 Francis Dominic Fajardo
 
 This software is licensed under the MPL version 2.0. For more information, read this repository's LICENSE. See the AUTHORS file for details about this software's developers and relevant contact details.
 
